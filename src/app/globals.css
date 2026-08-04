@@ -1,0 +1,162 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 260 18% 3%;
+    --foreground: 38 27% 95%;
+    --card: 270 16% 7%;
+    --card-foreground: 38 27% 95%;
+    --popover: 270 16% 7%;
+    --popover-foreground: 38 27% 95%;
+    --primary: 358 79% 49%;
+    --primary-foreground: 38 27% 95%;
+    --secondary: 263 13% 12%;
+    --secondary-foreground: 38 27% 95%;
+    --muted: 263 13% 12%;
+    --muted-foreground: 285 5% 60%;
+    --accent: 46 67% 47%;
+    --accent-foreground: 260 18% 3%;
+    --destructive: 358 79% 49%;
+    --destructive-foreground: 38 27% 95%;
+    --border: 263 13% 15%;
+    --input: 263 13% 15%;
+    --ring: 46 67% 47%;
+    --radius: 0.35rem;
+
+    /* Fixed header height — sections use it for scroll-margin so anchor links
+       never land underneath the bar. */
+    --header-h: 4.5rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-brand-ink text-brand-chalk font-sans antialiased;
+    font-feature-settings: 'ss01', 'cv01';
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display uppercase;
+  }
+
+  /* Keyboard focus stays visible everywhere; pointer focus does not draw a ring. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand-bullion ring-offset-2 ring-offset-brand-ink;
+  }
+
+  section[id] {
+    scroll-margin-top: calc(var(--header-h) + 1rem);
+  }
+
+  ::selection {
+    background: #e11b22;
+    color: #f5f2ed;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #08070a;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2a2632;
+    border-radius: 99px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #e11b22;
+  }
+}
+
+@layer utilities {
+  /* Frosted panel used for the header, branch cards and stat rails. */
+  .glass {
+    background: linear-gradient(160deg, rgba(245, 242, 237, 0.07) 0%, rgba(245, 242, 237, 0.02) 100%);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    border: 1px solid rgba(245, 242, 237, 0.09);
+  }
+
+  .glass-dark {
+    background: rgba(8, 7, 10, 0.72);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border-bottom: 1px solid rgba(245, 242, 237, 0.08);
+  }
+
+  /* Polished-bullion text. Animates only when motion is welcome. */
+  .text-gold {
+    background: linear-gradient(100deg, #7a5c12, #c9a227 28%, #f3da95 48%, #c9a227 68%, #7a5c12);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: sheen 6s linear infinite;
+  }
+
+  /* Engraved headline word — hollow with a bullion hairline. */
+  .text-engraved {
+    color: transparent;
+    -webkit-text-stroke: 1.5px #c9a227;
+    paint-order: stroke fill;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Rolled-steel grain. Sits under content, never intercepts pointer events. */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.5;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.22'/%3E%3C/svg%3E");
+  }
+
+  .hairline-top {
+    border-top: 1px solid rgba(245, 242, 237, 0.08);
+  }
+
+  /* Perspective wrapper for the tilting branch/facility cards. */
+  .scene-3d {
+    perspective: 1200px;
+    transform-style: preserve-3d;
+  }
+
+  .clip-slant {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2.5rem), 0 100%);
+  }
+}
+
+/* One global honour of the OS setting. Individual components also check it in JS
+   before starting GSAP timelines, so nothing merely *appears* still while a
+   scroll-linked animation keeps recalculating in the background. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

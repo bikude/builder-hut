@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="A Builder Hut">
+  <title>A Builder Hut</title>
+  <defs>
+    <linearGradient id="bullion" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7A5C12"/>
+      <stop offset="0.35" stop-color="#C9A227"/>
+      <stop offset="0.55" stop-color="#F3DA95"/>
+      <stop offset="1" stop-color="#C9A227"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="12" fill="#08070A"/>
+  <!-- Roof of the hut, doubling as the apex of the "A". -->
+  <path d="M32 12 L52 30 L46.6 30 L32 17 L17.4 30 L12 30 Z" fill="url(#bullion)"/>
+  <!-- Barbell bar and plates: the crossbar of the "A". -->
+  <rect x="16" y="35.5" width="32" height="5" rx="2.5" fill="#E11B22"/>
+  <rect x="12" y="31.5" width="5" height="13" rx="2" fill="#F5F2ED"/>
+  <rect x="47" y="31.5" width="5" height="13" rx="2" fill="#F5F2ED"/>
+  <!-- Legs of the "A". -->
+  <path d="M23 46 L29 30 L34 30 L28 46 Z" fill="#F5F2ED" opacity="0.92"/>
+  <path d="M41 46 L35 30 L30 30 L36 46 Z" fill="#F5F2ED" opacity="0.92"/>
+</svg>
