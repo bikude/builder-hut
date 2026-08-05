@@ -67,7 +67,7 @@ export function BrandIntro() {
         <Reveal delay={0.1} className="relative">
           <Parallax className="clip-slant aspect-[4/5] w-full rounded-lg" distance={70}>
             <Image
-              src={club?.image ?? '/images/branches/chandannagar-club.jpg'}
+              src={club?.image ?? '/media/branches/chandannagar-club/floor-wide.jpg'}
               alt={club?.imageAlt ?? 'A Builder Hut Club training floor'}
               fill
               sizes="(max-width: 1024px) 100vw, 45vw"

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 import { Marquee } from '@/components/common/marquee';
-import { BranchesPreview } from '@/components/home/branches-preview';
+import { BranchRail } from '@/components/home/branch-rail';
 import { BrandIntro } from '@/components/home/brand-intro';
 import { CtaBand } from '@/components/home/cta-band';
 import { FacilitiesGrid } from '@/components/home/facilities-grid';
@@ -11,7 +11,7 @@ import { ProgrammeTimeline } from '@/components/home/programme-timeline';
 import { StatsBand } from '@/components/home/stats-band';
 import { TestimonialsSection } from '@/components/home/testimonials-section';
 import { buildMetadata } from '@/lib/seo';
-import { graph, offersSchema } from '@/lib/structured-data';
+import { graph, membershipServiceSchema } from '@/lib/structured-data';
 
 export const metadata: Metadata = buildMetadata({
   title: 'A Builder Hut — 24×7 Premium Gym in Maheshtala & Budge Budge',
@@ -39,7 +39,7 @@ export default function HomePage() {
       {/* Membership offers as structured data — home is where most price searches land. */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(graph(offersSchema())) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(graph(membershipServiceSchema())) }}
       />
 
       <Hero />
@@ -47,7 +47,7 @@ export default function HomePage() {
       <Marquee items={TICKER} />
       <BrandIntro />
       <FacilitiesGrid />
-      <BranchesPreview />
+      <BranchRail />
       <ProgrammeTimeline />
       <MembershipPreview />
       <TestimonialsSection />

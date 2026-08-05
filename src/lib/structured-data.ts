@@ -113,26 +113,6 @@ export function websiteSchema() {
 }
 
 /** Membership tiers as Offers, so price-aware snippets can pick them up. */
-export function offersSchema() {
-  return {
-    '@type': 'OfferCatalog',
-    '@id': `${siteConfig.url}/membership#catalog`,
-    name: 'A Builder Hut memberships',
-    itemListElement: plans.map((plan) => ({
-      '@type': 'Offer',
-      name: `${plan.name} membership`,
-      price: plan.price,
-      priceCurrency: 'INR',
-      url: `${siteConfig.url}/membership#${plan.slug}`,
-      availability: 'https://schema.org/InStock',
-      eligibleDuration: {
-        '@type': 'QuantitativeValue',
-        value: plan.months,
-        unitCode: 'MON',
-      },
-    })),
-  };
-}
 
 export function breadcrumbSchema(trail: Array<{ name: string; path: string }>) {
   return {
@@ -169,3 +149,28 @@ export function siteGraph() {
 
 /** Address string helper shared with the footer, so markup and copy cannot drift apart. */
 export { formatAddress };
+
+/**
+ * Membership is described as a service rather than an `Offer`.
+ *
+ * Google requires a price on an Offer, and the gym does not publish one — an Offer with a
+ * fabricated or omitted price is invalid structured data and risks a manual action. A
+ * `Service` node states truthfully what is sold without claiming a rate.
+ */
+export function membershipServiceSchema() {
+  return {
+    '@type': 'Service',
+    name: 'Gym membership at A Builder Hut',
+    serviceType: 'Fitness membership',
+    provider: { '@type': 'Organization', name: siteConfig.name, url: siteConfig.url },
+    areaServed: ['Maheshtala', 'Budge Budge', 'Kolkata'],
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Membership terms',
+      itemListElement: plans.map((plan) => ({
+        '@type': 'OfferCatalog',
+        name: `${plan.name} — ${plan.months} ${plan.months === 1 ? 'month' : 'months'}`,
+      })),
+    },
+  };
+}

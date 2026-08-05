@@ -39,6 +39,16 @@ export type Branch = {
   equipment: string[];
   image: string;
   imageAlt: string;
+  /**
+   * This branch's own accent, sampled from its real lighting — Batanagar's gold LED
+   * ceiling, the Club's red iron, 3.0's copper hex panels. Drives the branch card, its
+   * panel in the horizontal rail and its section furniture.
+   */
+  accent: 'batanagar' | 'club' | 'three-zero';
+  /** Hex of the same accent, for canvas and inline gradients that cannot read Tailwind. */
+  accentHex: string;
+  /** One word for what this branch IS, used as the rail's category label. */
+  character: string;
   social: { instagram?: string; facebook?: string };
 };
 
@@ -72,8 +82,11 @@ export const branches: Branch[] = [
       'Beginner-friendly induction',
     ],
     equipment: ['Plate-loaded strength', 'Cardio deck', 'Functional rig', 'Free weights to 50 kg'],
-    image: '/images/branches/batanagar.jpg',
-    imageAlt: 'A Builder Hut Batanagar training floor',
+    accent: 'batanagar',
+    accentHex: '#C9A227',
+    character: 'Classic',
+    image: '/media/branches/batanagar/floor-wide.jpg',
+    imageAlt: 'The main training floor at A Builder Hut, Batanagar, under its geometric LED ceiling',
     social: {
       instagram: 'https://www.instagram.com/a_builder_hut/',
       facebook: 'https://www.facebook.com/builderhut22/',
@@ -109,8 +122,11 @@ export const branches: Branch[] = [
       'Salon and spa',
     ],
     equipment: ['Jerai Club Line', 'Full free-weight room', 'MMA bags and mat space', 'Cardio theatre'],
-    image: '/images/branches/chandannagar-club.jpg',
-    imageAlt: 'A Builder Hut Club Chandannagar strength floor',
+    accent: 'club',
+    accentHex: '#E11B22',
+    character: 'Lifestyle',
+    image: '/media/branches/chandannagar-club/floor-wide.jpg',
+    imageAlt: 'Rows of red plate-loaded machines across the A Builder Hut Club floor',
     social: {
       instagram: 'https://www.instagram.com/a_builder_hut_2.0/',
       facebook: 'https://www.facebook.com/p/A-Builder-Hut-20-100092604442538/',
@@ -138,15 +154,19 @@ export const branches: Branch[] = [
     areaSqft: null, // OWNER ACTION: confirm floor area for this branch.
     stations: null,
     highlights: [
+      'Kids fitness programme',
       'Viva Kai Greene series equipment',
       'Women-friendly floor and timings',
-      'Hygiene-first housekeeping routine',
+      'Family plan available',
       'Expert trainers on every shift',
       'One membership works across all branches',
     ],
     equipment: ['Viva Kai Greene series', 'Strength and hypertrophy machines', 'Cardio deck', 'Stretch and mobility zone'],
-    image: '/images/branches/budge-budge-3-0.jpg',
-    imageAlt: 'A Builder Hut 3.0 Budge Budge training floor',
+    accent: 'three-zero',
+    accentHex: '#B4693C',
+    character: 'Future',
+    image: '/media/branches/budge-budge-3-0/floor-wide.jpg',
+    imageAlt: 'The training floor at A Builder Hut 3.0 under its gold hex lighting',
     social: {
       facebook: 'https://www.facebook.com/p/A-Builder-Hut-30-Budge-Budge-61574711963786/',
     },
@@ -180,3 +200,28 @@ export const averageRating =
   Math.round(
     (branches.reduce((sum, b) => sum + (b.rating ?? 0) * (b.reviewCount ?? 0), 0) / (totalReviews || 1)) * 10,
   ) / 10;
+
+/**
+ * The kids fitness programme, run at 3.0.
+ *
+ * Sourced from the branch's own printed campaign ("Strong body. Sharp mind. Bright
+ * future." / "Today's habits. Tomorrow's champions."), which is the only place it is
+ * currently advertised — it appears nowhere on the existing website, and it is the one
+ * service no other gym in the catchment offers.
+ */
+export const kidsProgramme = {
+  branchSlug: 'budge-budge-3-0',
+  headline: "Today's habits. Tomorrow's champions.",
+  strapline: 'Strong body. Sharp mind. Bright future.',
+  audience: 'For kids. For families. For life.',
+  summary:
+    'A coached programme built for children — fun workouts, age-appropriate loading and trainers who understand that a nine-year-old is not a small adult. Fitness builds more than muscles.',
+  pillars: [
+    { title: 'Build strength', detail: 'Bodyweight and light-load work matched to age and stage, never a scaled-down adult programme.' },
+    { title: 'Sharp focus', detail: 'Structure and repetition that carry straight into schoolwork.' },
+    { title: 'Confidence & discipline', detail: 'Turning up, finishing the set, and finding out they can do more than they thought.' },
+    { title: 'Stronger together', detail: 'Family sessions, so training becomes something the household does rather than something one person leaves to do.' },
+  ],
+  familyPlan: true,
+  poster: '/media/branches/budge-budge-3-0/kids-programme.jpg',
+} as const;

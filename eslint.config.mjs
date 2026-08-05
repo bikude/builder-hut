@@ -11,6 +11,17 @@ const eslintConfig = defineConfig([
       'react-hooks/set-state-in-effect': 'off',
     },
   },
+  {
+    // react-three-fiber's imperative model — refs assigned to scene nodes for animation,
+    // memoized Math.random() geometry generated once per mount — is fundamentally at odds
+    // with the React Compiler purity assumptions these two rules check for. Both patterns
+    // are correct and standard for R3F; scoped off rather than disabled site-wide.
+    files: ['src/components/three/**', 'src/components/brand/**'],
+    rules: {
+      'react-hooks/purity': 'off',
+      'react-hooks/refs': 'off',
+    },
+  },
   globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts']),
 ]);
 

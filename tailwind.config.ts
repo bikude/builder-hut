@@ -4,8 +4,14 @@ import type { Config } from 'tailwindcss';
  * A Builder Hut design tokens.
  *
  * Two token families live side by side on purpose:
- *  - `brand.*` — the literal palette the identity is built from (black / red / white / gold).
+ *  - `brand.*` — the literal palette the identity is built from. Black and gold carry the
+ *    brand; copper and ember carry the warmth. Red is no longer a brand-wide primary — it
+ *    is the Club's own accent, because the Club's floor is genuinely full of red iron.
  *    Use these in bespoke components.
+ *  - `accent.*` — one hue per branch, sampled from that branch's own lighting:
+ *    Batanagar's gold LED ceiling, the Club's red machines, 3.0's warm copper hex panels.
+ *    A branch's accent colours its card, its rail panel and its section furniture, so the
+ *    three read as siblings rather than repaints.
  *  - shadcn semantic tokens (`background`, `primary`, `muted`, …) — driven by the HSL CSS
  *    variables in globals.css so any component pulled in later with `npx shadcn@latest add`
  *    inherits the same identity with no rework.
@@ -22,15 +28,25 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          ink: '#08070A', // base black — cool violet cast, never pure #000
-          forge: '#121016', // raised surface
-          steel: '#1D1A22', // hairlines, inset panels
-          blood: '#E11B22', // primary red
-          ember: '#8E0F17', // deep red, gradient anchor
-          bullion: '#C9A227', // gold
+          ink: '#06050A', // base black — deeper than before, so gold reads as light
+          forge: '#0E0C13', // raised surface
+          steel: '#191621', // hairlines, inset panels
+          iron: '#241F2C', // top of the metal gradient
+          bullion: '#C9A227', // gold — the brand's own logo gold
           gilt: '#F3DA95', // gold highlight
+          copper: '#B4693C', // copper — warm mid, the second metal
+          patina: '#7A4526', // copper shadow, gradient anchor
+          flare: '#FF7A2F', // orange accent, used sparingly for heat
+          blood: '#E11B22', // red — now the Club's accent, not a site-wide primary
+          ember: '#8E0F17', // deep red, gradient anchor
           chalk: '#F5F2ED', // off-white (lifting chalk, not paper white)
-          smoke: '#9A939F', // muted copy
+          smoke: '#948D9B', // muted copy
+        },
+        accent: {
+          // Per-branch identity. Sampled from each branch's real lighting.
+          batanagar: '#C9A227',
+          club: '#E11B22',
+          'three-zero': '#B4693C',
         },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
@@ -39,7 +55,7 @@ const config: Config = {
         primary: { DEFAULT: 'hsl(var(--primary))', foreground: 'hsl(var(--primary-foreground))' },
         secondary: { DEFAULT: 'hsl(var(--secondary))', foreground: 'hsl(var(--secondary-foreground))' },
         muted: { DEFAULT: 'hsl(var(--muted))', foreground: 'hsl(var(--muted-foreground))' },
-        accent: { DEFAULT: 'hsl(var(--accent))', foreground: 'hsl(var(--accent-foreground))' },
+        ui: { DEFAULT: 'hsl(var(--accent))', foreground: 'hsl(var(--accent-foreground))' },
         destructive: { DEFAULT: 'hsl(var(--destructive))', foreground: 'hsl(var(--destructive-foreground))' },
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -67,11 +83,21 @@ const config: Config = {
         plate: '0 30px 80px -30px rgba(0,0,0,0.9), 0 0 0 1px rgba(245,242,237,0.05)',
         'glow-red': '0 0 40px -8px rgba(225,27,34,0.55)',
         'glow-gold': '0 0 40px -8px rgba(201,162,39,0.5)',
+        'glow-copper': '0 0 50px -10px rgba(180,105,60,0.6)',
+        // Long, low, warm — a spotlight above the platform rather than a UI drop shadow.
+        spot: '0 60px 120px -40px rgba(180,105,60,0.35), 0 0 0 1px rgba(245,242,237,0.06)',
         inset: 'inset 0 1px 0 0 rgba(245,242,237,0.07)',
       },
       backgroundImage: {
         'gold-sheen': 'linear-gradient(100deg,#7A5C12 0%,#C9A227 28%,#F3DA95 48%,#C9A227 68%,#7A5C12 100%)',
+        'copper-sheen': 'linear-gradient(100deg,#5A3018 0%,#B4693C 30%,#E8A870 50%,#B4693C 70%,#5A3018 100%)',
         'red-forge': 'linear-gradient(135deg,#E11B22 0%,#8E0F17 100%)',
+        // Brushed metal: fine anisotropic streaks, the way light behaves on a barbell sleeve.
+        'brushed-metal':
+          'repeating-linear-gradient(96deg,rgba(245,242,237,0.055) 0px,rgba(245,242,237,0.055) 1px,transparent 1px,transparent 3px),linear-gradient(160deg,#241F2C 0%,#0E0C13 55%,#06050A 100%)',
+        // Warm volumetric wash used behind hero copy so text keeps contrast over video.
+        'heat-wash':
+          'radial-gradient(120% 80% at 12% 100%,rgba(180,105,60,0.28) 0%,transparent 60%),radial-gradient(90% 70% at 88% 0%,rgba(201,162,39,0.20) 0%,transparent 55%)',
         'plate-fade': 'linear-gradient(180deg,rgba(8,7,10,0) 0%,rgba(8,7,10,0.65) 55%,#08070A 100%)',
       },
       transitionTimingFunction: {

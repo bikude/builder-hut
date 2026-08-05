@@ -160,3 +160,105 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Luxury layer — metal, warmth and light.
+
+   These are the textures the identity leans on instead of flat fills. All of them
+   are pure CSS: no image weight, and they scale to any viewport without going soft,
+   which matters because the supplied photography tops out around 720px.
+   ───────────────────────────────────────────────────────────────────────────── */
+@layer utilities {
+  /* Brushed metal panel. The fine streaks are anisotropic, the way light actually
+     behaves on a barbell sleeve rather than on a flat swatch. */
+  .metal {
+    background-image: theme('backgroundImage.brushed-metal');
+    box-shadow: inset 0 1px 0 0 rgb(245 242 237 / 0.08), inset 0 -1px 0 0 rgb(0 0 0 / 0.5);
+  }
+
+  /* Gold hairline edge — reads as a machined bevel rather than a border. */
+  .edge-gilt {
+    box-shadow:
+      inset 0 0 0 1px rgb(201 162 39 / 0.28),
+      0 0 0 1px rgb(6 5 10 / 0.9);
+  }
+
+  /* A moving spotlight. Used behind headings and over video so warm light appears to
+     travel across the surface rather than sit on it. */
+  .spotlight {
+    position: relative;
+    isolation: isolate;
+  }
+  .spotlight::before {
+    content: '';
+    position: absolute;
+    inset: -30%;
+    z-index: -1;
+    background: radial-gradient(38% 38% at var(--spot-x, 50%) var(--spot-y, 40%), rgb(201 162 39 / 0.22) 0%, transparent 70%);
+    animation: spot-drift 14s ease-in-out infinite alternate;
+  }
+
+  /* Volumetric shafts falling from above, as in the gym's own logo reveal. */
+  .light-rays::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      100deg,
+      transparent 0px,
+      transparent 46px,
+      rgb(201 162 39 / 0.05) 46px,
+      rgb(201 162 39 / 0.05) 52px,
+      transparent 52px,
+      transparent 120px
+    );
+    mask-image: radial-gradient(80% 60% at 50% 0%, #000 0%, transparent 75%);
+    -webkit-mask-image: radial-gradient(80% 60% at 50% 0%, #000 0%, transparent 75%);
+  }
+
+  /* Copper counterpart to .text-engraved, for 3.0's sections. */
+  .text-copper {
+    background: theme('backgroundImage.copper-sheen');
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+@keyframes spot-drift {
+  0% {
+    --spot-x: 22%;
+    --spot-y: 30%;
+  }
+  100% {
+    --spot-x: 78%;
+    --spot-y: 62%;
+  }
+}
+
+/* Mascot speech: rises in, holds, fades. One shot — the element unmounts afterwards. */
+@keyframes mascot-speak {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, calc(-100% + 10px)) scale(0.94);
+  }
+  8%,
+  82% {
+    opacity: 1;
+    transform: translate(-50%, -100%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, calc(-100% - 8px)) scale(0.98);
+  }
+}
+
+/* Everything above is decoration. None of it runs when motion is unwelcome. */
+@media (prefers-reduced-motion: reduce) {
+  .spotlight::before,
+  [class*='mascot-speak'] {
+    animation: none !important;
+  }
+}

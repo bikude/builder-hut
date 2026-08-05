@@ -1,31 +1,28 @@
 /**
- * ══════════════════════════════════════════════════════════════════════════════
- *  PRICING — READ BEFORE YOU PUBLISH
- * ══════════════════════════════════════════════════════════════════════════════
- *  No public source lists A Builder Hut's current rates, so the figures below are
- *  INDICATIVE PLACEHOLDERS shaped to the local market. Replace every `price` and
- *  `strikePrice` with the real number from reception, then set
- *  `PRICING_CONFIRMED = true`.
+ * Membership.
  *
- *  While `PRICING_CONFIRMED` is false the membership UI adds a short line telling
- *  visitors to call for today's rate — so a wrong number never goes out unqualified.
- *  Everything else on the site is unaffected by this flag.
- * ══════════════════════════════════════════════════════════════════════════════
+ * There are no prices in this file, and that is deliberate.
+ *
+ * Rates at A Builder Hut move with the season, with the offer running at each branch, and
+ * with what a member is actually joining for. A number published here would be wrong
+ * within weeks, and a wrong number is worse for the gym than no number: it either
+ * undersells the floor or turns away someone who would have joined at the real rate.
+ *
+ * So every tier below describes what you GET and how long it runs, and every action routes
+ * to a person — call, WhatsApp, or walk into the nearest branch. Reception quotes the
+ * current rate, which is the only rate that is ever correct.
  */
-export const PRICING_CONFIRMED = false;
 
 export type Plan = {
   slug: string;
   name: string;
   months: number;
-  /** Total payable for the period, in rupees. */
-  price: number;
-  /** Optional "was" price. Set to null when nothing is being discounted. */
-  strikePrice: number | null;
-  /** Short line under the price — the reason this tier exists. */
+  /** Short line under the name — the reason this tier exists. */
   positioning: string;
   perks: string[];
   featured: boolean;
+  /** Pre-filled WhatsApp enquiry, so the member does not have to compose one. */
+  enquiry: string;
 };
 
 export const plans: Plan[] = [
@@ -33,23 +30,20 @@ export const plans: Plan[] = [
     slug: 'monthly',
     name: 'Monthly',
     months: 1,
-    price: 1200,
-    strikePrice: null,
     positioning: 'Test the floor before you commit to a season.',
     perks: [
       'Access 24×7 at your home branch',
-      'Free fitness assessment on joining',
+      'Fitness assessment on joining',
       'Trainer-led induction workout',
       'Locker and changing room',
     ],
     featured: false,
+    enquiry: "Hi! I'd like to join A Builder Hut on a monthly membership. What's available?",
   },
   {
     slug: 'quarterly',
     name: 'Quarterly',
     months: 3,
-    price: 3000,
-    strikePrice: 3600,
     positioning: 'Long enough to see the first real change in the mirror.',
     perks: [
       'Everything in Monthly',
@@ -58,37 +52,36 @@ export const plans: Plan[] = [
       'Monthly body composition check',
     ],
     featured: false,
+    enquiry: "Hi! I'd like to join A Builder Hut on a quarterly membership. What's available?",
   },
   {
     slug: 'half-yearly',
     name: 'Half Yearly',
     months: 6,
-    price: 5000,
-    strikePrice: 7200,
     positioning: 'The tier most members renew into. Habit territory.',
     perks: [
       'Everything in Quarterly',
-      'One complimentary PT month',
+      'Complimentary personal training block',
       'Programme rewritten every 8 weeks',
-      'Priority slot booking for classes',
+      'Priority slot booking',
     ],
     featured: true,
+    enquiry: "Hi! I'd like to join A Builder Hut on a half-yearly membership. What's available?",
   },
   {
     slug: 'yearly',
     name: 'Yearly',
     months: 12,
-    price: 8000,
-    strikePrice: 14400,
-    positioning: 'Lowest monthly cost, and the only tier with a freeze.',
+    positioning: 'The longest commitment, and the only tier with a freeze.',
     perks: [
       'Everything in Half Yearly',
-      'Two complimentary PT months',
+      'Extended personal training block',
       'Membership freeze up to 30 days',
       'Guest passes for family',
       'Invitations to member events',
     ],
     featured: false,
+    enquiry: "Hi! I'd like to join A Builder Hut on a yearly membership. What's available?",
   },
 ];
 
@@ -96,9 +89,9 @@ export type PtPackage = {
   slug: string;
   name: string;
   sessions: string;
-  price: number;
   summary: string;
   includes: string[];
+  enquiry: string;
 };
 
 export const ptPackages: PtPackage[] = [
@@ -106,16 +99,15 @@ export const ptPackages: PtPackage[] = [
     slug: 'pt-starter',
     name: 'Starter',
     sessions: '12 sessions / 1 month',
-    price: 3500,
     summary: 'For a first-timer who wants form corrected before anything gets heavy.',
     includes: ['Movement screen', 'Technique coaching on every lift', 'Written 4-week programme', 'Weekly check-in'],
+    enquiry: "Hi! I'd like to ask about the Starter personal training package.",
   },
   {
     slug: 'pt-transform',
     name: 'Transformation',
     sessions: '36 sessions / 3 months',
-    price: 9000,
-    summary: 'The block where weight loss or muscle gain actually shows up in photos.',
+    summary: 'The block where weight loss or muscle gain actually shows up in photographs.',
     includes: [
       'Everything in Starter',
       'Macro-matched diet plan',
@@ -123,12 +115,12 @@ export const ptPackages: PtPackage[] = [
       'Progressive overload tracking',
       'WhatsApp support between sessions',
     ],
+    enquiry: "Hi! I'd like to ask about the Transformation personal training package.",
   },
   {
     slug: 'pt-athlete',
     name: 'Athlete',
     sessions: '72 sessions / 6 months',
-    price: 16000,
     summary: 'Strength, physique or combat goals that need a full training season.',
     includes: [
       'Everything in Transformation',
@@ -137,6 +129,7 @@ export const ptPackages: PtPackage[] = [
       'Competition or event peaking',
       'Recovery and mobility protocol',
     ],
+    enquiry: "Hi! I'd like to ask about the Athlete personal training package.",
   },
 ];
 
@@ -145,9 +138,8 @@ export type Stat = {
   suffix: string;
   label: string;
   sub: string;
-  /** Decimal places to render. Defaults to 0. */
   decimals?: number;
-  /** Years and counts of stations read wrong with thousand separators. */
+  /** Years and station counts read wrong with thousand separators. */
   plain?: boolean;
 };
 
@@ -160,20 +152,3 @@ export const stats: Stat[] = [
   { value: 11000, suffix: ' sq ft', label: 'Club floor', sub: 'Chandannagar' },
   { value: 2022, suffix: '', label: 'Training since', sub: 'Batanagar, branch one', plain: true },
 ];
-
-export function pricePerMonth(plan: Plan): number {
-  return Math.round(plan.price / plan.months);
-}
-
-export function savingsPercent(plan: Plan): number | null {
-  if (!plan.strikePrice) return null;
-  return Math.round(((plan.strikePrice - plan.price) / plan.strikePrice) * 100);
-}
-
-export function formatInr(amount: number): string {
-  return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
-    maximumFractionDigits: 0,
-  }).format(amount);
-}

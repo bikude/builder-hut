@@ -8,7 +8,7 @@ import { EnquiryForm } from '@/components/forms/enquiry-form';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { branches } from '@/content/branches';
-import { PRICING_CONFIRMED, formatInr, ptPackages } from '@/content/membership';
+import { ptPackages } from '@/content/membership';
 import { programme } from '@/content/programme';
 import { trainers, trainersAreRolesOnly } from '@/content/trainers';
 import { buildMetadata } from '@/lib/seo';
@@ -97,13 +97,6 @@ export default function PersonalTrainingPage() {
             lede="Pick by what you are trying to change, not by budget alone. The starter block exists to make you safe under load; the longer blocks exist to make the change stick."
           />
 
-          {!PRICING_CONFIRMED && (
-            <p className="mt-8 flex items-start gap-3 rounded-lg border border-brand-bullion/25 bg-brand-bullion/5 p-5 text-sm leading-relaxed text-brand-chalk/80">
-              <Info className="mt-0.5 size-4 shrink-0 text-brand-gilt" aria-hidden="true" />
-              Package rates are indicative and vary with trainer availability. Confirm the current price at reception
-              or on WhatsApp before you plan around it.
-            </p>
-          )}
 
           <ul className="mt-14 grid gap-5 lg:grid-cols-3">
             {ptPackages.map((pack, index) => (
@@ -115,7 +108,9 @@ export default function PersonalTrainingPage() {
                       {pack.sessions}
                     </p>
                   </div>
-                  <p className="font-display text-3xl tabular-nums text-brand-chalk">{formatInr(pack.price)}</p>
+                  <p className="font-mono text-[0.625rem] uppercase tracking-[0.18em] text-brand-gilt">
+                    Rates confirmed at reception
+                  </p>
                   <p className="leading-relaxed text-brand-smoke">{pack.summary}</p>
                   <ul className="flex flex-col gap-3">
                     {pack.includes.map((item) => (
@@ -128,7 +123,7 @@ export default function PersonalTrainingPage() {
                   <div className="mt-auto pt-2">
                     <Button asChild variant="outline" size="sm" className="w-full">
                       <a
-                        href={whatsappLink(`Hi! I'd like to ask about the ${pack.name} personal training package.`)}
+                        href={whatsappLink(pack.enquiry)}
                         target="_blank"
                         rel="noopener noreferrer"
                       >

@@ -1,39 +1,46 @@
+import Image from 'next/image';
+
+import { brand } from '@/content/media';
 import { cn } from '@/lib/utils';
 
 /**
- * A Builder Hut mark — an original wordmark drawn for this site.
+ * A Builder Hut mark — the gym's real logo.
  *
- * The gym's own logo is its property and is not redistributed here. To swap it in:
- *   1. drop the file at `public/logo.svg` (and `public/logo-mark.svg` if separate),
- *   2. replace the <svg> below with <Image src="/logo.svg" … />, keeping the same
- *      width/height props so the header layout does not shift.
+ * The supplied logo files are circular renders of the mark sitting over a photograph of
+ * the gym floor. `tools/process-media.py` keys the gold emblem off that background — on
+ * brightness AND warmth together, so the concrete's own highlights are excluded — and
+ * writes a transparent PNG. That is what these components render.
  *
- * The mark reads as a hut roof over a loaded bar — the two things the brand is named for.
+ * `LogoMark` uses the emblem alone. The full lockup sets the wordmark twice, which turns
+ * to gold mush below roughly 140px wide, so it is reserved for `LogoLockup` where there
+ * is room for it — the footer and the preloader.
  */
 export function LogoMark({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 48 48" role="presentation" aria-hidden="true" className={cn('size-9', className)}>
-      <defs>
-        <linearGradient id="abh-gold" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#F3DA95" />
-          <stop offset="55%" stopColor="#C9A227" />
-          <stop offset="100%" stopColor="#7A5C12" />
-        </linearGradient>
-      </defs>
-      {/* Roof */}
-      <path d="M24 4 3 20h6.5L24 9.2 38.5 20H45L24 4Z" fill="url(#abh-gold)" />
-      {/* Barbell inside the hut */}
-      <rect x="9" y="26.5" width="30" height="4" rx="1.2" fill="#E11B22" />
-      <rect x="5" y="22" width="5" height="13" rx="1.6" fill="#F5F2ED" />
-      <rect x="38" y="22" width="5" height="13" rx="1.6" fill="#F5F2ED" />
-      <rect x="12" y="24" width="4" height="9" rx="1.2" fill="#F5F2ED" opacity="0.7" />
-      <rect x="32" y="24" width="4" height="9" rx="1.2" fill="#F5F2ED" opacity="0.7" />
-      {/* Floor line */}
-      <rect x="3" y="41" width="42" height="2" rx="1" fill="#C9A227" opacity="0.5" />
-    </svg>
+    <span className={cn('relative block size-9', className)}>
+      <Image src={brand.emblem} alt="" fill sizes="72px" priority className="object-contain" aria-hidden="true" />
+    </span>
   );
 }
 
+/** The full lockup — emblem plus wordmark. Only where it has space to be legible. */
+export function LogoLockup({ className }: { className?: string }) {
+  return (
+    <Image
+      src={brand.logo.batanagar}
+      alt="A Builder Hut"
+      width={220}
+      height={172}
+      priority
+      className={cn('h-auto w-[180px]', className)}
+    />
+  );
+}
+
+/**
+ * Header lockup: emblem plus typeset name. The name is live text rather than part of the
+ * image so it stays crisp at any zoom and is readable to a screen reader as text.
+ */
 export function Logo({ className, compact = false }: { className?: string; compact?: boolean }) {
   return (
     <span className={cn('flex items-center gap-2.5', className)}>

@@ -95,7 +95,7 @@ export function GalleryGrid() {
                 alt={entry.alt}
                 fill
                 loading="lazy"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 460px"
                 className="object-cover transition-transform duration-700 ease-hut group-hover:scale-105"
               />
             </div>
@@ -133,12 +133,10 @@ export function GalleryGrid() {
                     {branchName(active.branchSlug)}
                   </DialogTitle>
                   <DialogDescription className="mt-1 text-sm text-brand-smoke">{active.alt}</DialogDescription>
-                  {active.isPlaceholder && (
-                    <p className="mt-3 flex items-start gap-2 font-mono text-[0.625rem] uppercase tracking-[0.16em] text-brand-bullion">
-                      <Info className="mt-px size-3 shrink-0" aria-hidden="true" />
-                      Placeholder — real photo from {active.sourceHint}
-                    </p>
-                  )}
+                  <p className="mt-3 flex items-start gap-2 font-mono text-[0.625rem] uppercase tracking-[0.16em] text-brand-bullion">
+                    <Info className="mt-px size-3 shrink-0" aria-hidden="true" />
+                    {branchName(active.branchSlug)} · shot on location
+                  </p>
                 </div>
 
                 <div className="flex shrink-0 items-center gap-2">

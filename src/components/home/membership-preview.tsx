@@ -5,15 +5,14 @@ import { Reveal } from '@/components/common/reveal';
 import { SectionHeading } from '@/components/common/section-heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { formatInr, plans, pricePerMonth, PRICING_CONFIRMED, savingsPercent } from '@/content/membership';
+import { plans } from '@/content/membership';
 import { cn } from '@/lib/utils';
 
 /**
  * Plan grid.
  *
- * While `PRICING_CONFIRMED` is false in src/content/membership.ts, a single line under
- * the grid tells visitors to confirm the current rate by phone. Flip the flag once the
- * real numbers are in and the line disappears — no component edit needed.
+ * The gym does not publish rates, so each card shows the term and routes to a person.
+ * See src/content/membership.ts for why that is the right call rather than a gap.
  */
 export function MembershipPreview() {
   return (
@@ -32,7 +31,6 @@ export function MembershipPreview() {
 
         <ul className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           {plans.map((plan, index) => {
-            const savings = savingsPercent(plan);
             return (
               <Reveal as="li" key={plan.slug} delay={0.06 * index} className="h-full">
                 <article
@@ -57,16 +55,13 @@ export function MembershipPreview() {
 
                   <div className="flex flex-col gap-1">
                     <p className="flex items-baseline gap-2">
-                      <span className="font-display text-4xl leading-none text-brand-chalk">{formatInr(plan.price)}</span>
-                      {plan.strikePrice && (
-                        <span className="font-mono text-xs text-brand-smoke line-through">
-                          {formatInr(plan.strikePrice)}
-                        </span>
-                      )}
+                      <span className="font-display text-4xl leading-none text-brand-chalk">
+                        {plan.months}
+                        <span className="ml-2 text-lg text-brand-smoke">{plan.months === 1 ? 'month' : 'months'}</span>
+                      </span>
                     </p>
                     <p className="font-mono text-[0.625rem] uppercase tracking-[0.16em] text-brand-bullion">
-                      {formatInr(pricePerMonth(plan))} / month
-                      {savings ? ` · save ${savings}%` : ''}
+                      Call for today's rate
                     </p>
                   </div>
 
@@ -87,14 +82,6 @@ export function MembershipPreview() {
             );
           })}
         </ul>
-
-        {!PRICING_CONFIRMED && (
-          <Reveal>
-            <p className="text-center font-mono text-[0.625rem] uppercase tracking-[0.16em] text-brand-smoke">
-              Offers change through the year — call the branch to confirm today's rate.
-            </p>
-          </Reveal>
-        )}
       </div>
     </section>
   );

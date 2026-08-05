@@ -9,10 +9,10 @@ import { FaqList } from '@/components/common/faq-list';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { branches } from '@/content/branches';
-import { PRICING_CONFIRMED, formatInr, plans, pricePerMonth, savingsPercent } from '@/content/membership';
+import { plans } from '@/content/membership';
 import { buildMetadata } from '@/lib/seo';
 import { siteConfig, telLink, whatsappLink } from '@/lib/site';
-import { breadcrumbSchema, graph, offersSchema } from '@/lib/structured-data';
+import { breadcrumbSchema, graph, membershipServiceSchema } from '@/lib/structured-data';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = buildMetadata({
@@ -31,7 +31,7 @@ export default function MembershipPage() {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(
             graph(
-              offersSchema(),
+              membershipServiceSchema(),
               breadcrumbSchema([
                 { name: 'Home', path: '/' },
                 { name: 'Membership', path: '/membership' },
@@ -61,20 +61,6 @@ export default function MembershipPage() {
         }
       />
 
-      {!PRICING_CONFIRMED && (
-        <div className="border-b border-brand-bullion/25 bg-brand-bullion/8">
-          <div className="container flex items-start gap-3 py-4">
-            <Info className="mt-0.5 size-4 shrink-0 text-brand-gilt" aria-hidden="true" />
-            <p className="text-sm leading-relaxed text-brand-chalk/85">
-              The rates below are indicative. Offers change through the year and differ slightly by branch — call{' '}
-              <a href={telLink()} className="text-brand-gilt underline-offset-4 hover:underline">
-                {siteConfig.contact.phoneDisplay}
-              </a>{' '}
-              or message us on WhatsApp for today’s exact price before you plan around a number.
-            </p>
-          </div>
-        </div>
-      )}
 
       <section id="plans" className="border-b border-brand-chalk/8 py-24 sm:py-32">
         <div className="container">
@@ -85,9 +71,7 @@ export default function MembershipPage() {
           />
 
           <ul className="mt-16 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {plans.map((plan, index) => {
-              const saving = savingsPercent(plan);
-              return (
+            {plans.map((plan, index) => (
                 <Reveal as="li" key={plan.slug} delay={index * 0.07}>
                   <article
                     className={cn(
@@ -107,19 +91,11 @@ export default function MembershipPage() {
                     </div>
 
                     <div>
-                      <p className="flex items-baseline gap-2">
-                        <span className="font-display text-4xl tabular-nums text-brand-chalk">
-                          {formatInr(plan.price)}
-                        </span>
-                        {plan.strikePrice !== null && (
-                          <span className="font-mono text-sm tabular-nums text-brand-smoke line-through">
-                            {formatInr(plan.strikePrice)}
-                          </span>
-                        )}
+                      <p className="font-display text-4xl leading-none text-brand-chalk">
+                        {plan.months} <span className="text-xl text-brand-smoke">{plan.months === 1 ? 'month' : 'months'}</span>
                       </p>
-                      <p className="mt-1 font-mono text-[0.625rem] uppercase tracking-[0.18em] text-brand-smoke">
-                        {formatInr(pricePerMonth(plan))} per month
-                        {saving !== null && <span className="text-brand-gilt"> · save {saving}%</span>}
+                      <p className="mt-2 font-mono text-[0.625rem] uppercase tracking-[0.18em] text-brand-gilt">
+                        Call for today's rate
                       </p>
                     </div>
 
@@ -140,20 +116,17 @@ export default function MembershipPage() {
                         className="w-full"
                       >
                         <a
-                          href={whatsappLink(
-                            `Hi! I'd like to join A Builder Hut on the ${plan.name} plan. Could you tell me the current rate?`,
-                          )}
+                          href={whatsappLink(plan.enquiry)}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          Enquire about {plan.name}
+                          Join on {plan.name}
                         </a>
                       </Button>
                     </div>
                   </article>
                 </Reveal>
-              );
-            })}
+            ))}
           </ul>
         </div>
       </section>
