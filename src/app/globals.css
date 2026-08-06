@@ -24,6 +24,12 @@
     /* How hard media is knocked back so type stays readable on top of it. */
     --scrim: 0.72;
     --scrim-soft: 0.35;
+    /* Glass tints toward light on a dark page. */
+    --glass-tint: 245 242 237;
+    /* Gold. The hue is the brand and never moves; only its value does, so small labels
+       stay legible on both grounds. */
+    --bullion: 201 162 39;
+    --gilt: 243 218 149;
 
     --background: 260 18% 3%;
     --foreground: 38 27% 95%;
@@ -63,6 +69,11 @@
        harder to read than light type over dark footage. */
     --scrim: 0.55;
     --scrim-soft: 0.28;
+    /* …and toward smoke on a bright one, so panels actually have an edge. */
+    --glass-tint: 30 26 18;
+    /* Same gold, dropped in value: #C9A227 on cream fails contrast at label sizes. */
+    --bullion: 138 106 12;
+    --gilt: 110 84 8;
   }
 
   * {
@@ -118,18 +129,23 @@
 
 @layer utilities {
   /* Frosted panel used for the header, branch cards and stat rails. */
+  /*
+   * Glass is a tint of the OPPOSITE of the surface it sits on: a pale wash on a dark
+   * page, a smoke wash on a bright one. Hardcoding it white made every glass panel
+   * invisible in light mode — white on cream is nothing.
+   */
   .glass {
-    background: linear-gradient(160deg, rgba(245, 242, 237, 0.07) 0%, rgba(245, 242, 237, 0.02) 100%);
+    background: linear-gradient(160deg, rgb(var(--glass-tint) / 0.07) 0%, rgb(var(--glass-tint) / 0.02) 100%);
     backdrop-filter: blur(18px) saturate(150%);
     -webkit-backdrop-filter: blur(18px) saturate(150%);
-    border: 1px solid rgba(245, 242, 237, 0.09);
+    border: 1px solid rgb(var(--glass-tint) / 0.12);
   }
 
   .glass-dark {
-    background: rgba(8, 7, 10, 0.72);
+    background: rgb(var(--ink) / 0.78);
     backdrop-filter: blur(20px) saturate(160%);
     -webkit-backdrop-filter: blur(20px) saturate(160%);
-    border-bottom: 1px solid rgba(245, 242, 237, 0.08);
+    border-bottom: 1px solid rgb(var(--glass-tint) / 0.1);
   }
 
   /* Polished-bullion text. Animates only when motion is welcome. */
@@ -142,11 +158,68 @@
     animation: sheen 6s linear infinite;
   }
 
-  /* Engraved headline word — hollow with a bullion hairline. */
+  /*
+   * Engraved headline word — hollow with a bullion hairline.
+   *
+   * The hollow treatment only works on a dark ground: on cream a 1.5px gold outline
+   * around white counter-space is close to invisible. So on light surfaces the word
+   * fills solid gold instead and keeps a darker hairline for definition. Inside
+   * `.cinematic` it stays hollow, because that ground is dark in both themes.
+   */
   .text-engraved {
     color: transparent;
     -webkit-text-stroke: 1.5px #c9a227;
     paint-order: stroke fill;
+  }
+
+  /* On a bright page the word fills solid — a gold outline on cream reads as nothing. */
+  .light .text-engraved {
+    /* Same token as every other gold on the page, so contrast is tuned in one place. */
+    color: rgb(var(--bullion));
+    -webkit-text-stroke: 0.5px rgb(var(--gilt));
+  }
+
+  .light .text-copper {
+    background: none;
+    color: #8a4a24;
+  }
+
+  /*
+   * Cinematic island.
+   *
+   * Sections that sit on top of the gym's own footage stay dark in BOTH themes, and this
+   * is a correctness fix rather than a stylistic one: the photography is dark, so a light
+   * theme would put near-black type over near-black film. Flipping the surface tokens
+   * locally means every scrim, border and text colour inside keeps working, without a
+   * single component needing to know which theme is active.
+   *
+   * The page around these islands still goes bright — which is the point of the setting:
+   * readable UI in daylight, film that still looks like film.
+   */
+  .cinematic .text-engraved {
+    color: transparent;
+    -webkit-text-stroke: 1.5px #c9a227;
+  }
+
+  .cinematic .text-copper {
+    background: theme('backgroundImage.copper-sheen');
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .cinematic {
+    --glass-tint: 245 242 237;
+    --bullion: 201 162 39;
+    --gilt: 243 218 149;
+    --ink: 6 5 10;
+    --forge: 14 12 19;
+    --steel: 25 22 33;
+    --iron: 36 31 44;
+    --chalk: 245 242 237;
+    --smoke: 148 141 155;
+    color: rgb(var(--chalk));
   }
 
   .text-balance {

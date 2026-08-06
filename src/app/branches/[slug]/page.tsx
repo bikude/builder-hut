@@ -73,7 +73,7 @@ export default async function BranchPage({ params }: { params: Promise<{ slug: s
       />
 
       {/* ── 1 · Trailer ─────────────────────────────────────────────────── */}
-      <header className="relative flex min-h-[88svh] flex-col justify-end overflow-hidden bg-brand-ink pb-12 pt-[var(--header-h)]">
+      <header className="cinematic relative flex min-h-[88svh] flex-col justify-end overflow-hidden bg-brand-ink pb-12 pt-[var(--header-h)]">
         <div className="absolute inset-0 -z-20">
           {film ? (
             <AutoVideo

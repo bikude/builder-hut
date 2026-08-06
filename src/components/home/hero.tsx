@@ -70,7 +70,7 @@ export function Hero() {
   return (
     <section
       ref={rootRef}
-      className="light-rays relative flex min-h-[100svh] flex-col justify-end overflow-hidden bg-brand-ink pb-16 pt-[var(--header-h)] sm:pb-24"
+      className="cinematic light-rays relative flex min-h-[100svh] flex-col justify-center overflow-hidden sm:justify-end bg-brand-ink pb-16 pt-[var(--header-h)] sm:pb-24"
     >
       {/* 1 — the room */}
       <div data-hero-film className="absolute inset-0 -z-30">
@@ -90,7 +90,7 @@ export function Hero() {
       {/* 2 — warm wash, so the type keeps contrast on whatever frame the film is showing */}
       <div className="absolute inset-0 -z-20 bg-heat-wash" aria-hidden="true" />
       <div
-        className="absolute inset-0 -z-20 bg-gradient-to-t from-brand-ink via-brand-ink/72 to-brand-ink/40"
+        className="absolute inset-0 -z-20 bg-gradient-to-t from-brand-ink via-brand-ink/45 via-40% to-transparent"
         aria-hidden="true"
       />
 

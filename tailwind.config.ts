@@ -34,8 +34,8 @@ const config: Config = {
           forge: 'rgb(var(--forge) / <alpha-value>)', // raised surface
           steel: 'rgb(var(--steel) / <alpha-value>)', // hairlines, inset panels
           iron: 'rgb(var(--iron) / <alpha-value>)', // top of the metal gradient
-          bullion: '#C9A227', // gold — the brand's own logo gold
-          gilt: '#F3DA95', // gold highlight
+          bullion: 'rgb(var(--bullion) / <alpha-value>)', // gold — value shifts for contrast, hue never does
+          gilt: 'rgb(var(--gilt) / <alpha-value>)', // gold highlight
           copper: '#B4693C', // copper — warm mid, the second metal
           patina: '#7A4526', // copper shadow, gradient anchor
           flare: '#FF7A2F', // orange accent, used sparingly for heat

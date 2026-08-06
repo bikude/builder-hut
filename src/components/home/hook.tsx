@@ -52,7 +52,7 @@ export function Hook() {
   return (
     <section
       ref={rootRef}
-      className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-brand-ink"
+      className="cinematic relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-brand-ink"
     >
       <div data-hook-film className="absolute inset-0 -z-20 opacity-55">
         {film && (

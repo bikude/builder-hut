@@ -181,7 +181,7 @@ function BranchCard({ branch }: { branch: Branch }) {
 
 export function BranchCards() {
   return (
-    <section id="branches" className="relative bg-brand-ink py-14 sm:py-20">
+    <section id="branches" className="cinematic relative bg-brand-ink py-14 sm:py-20">
       <div className="container grid gap-4 md:grid-cols-3">
         {branches.map((branch) => (
           <BranchCard key={branch.slug} branch={branch} />

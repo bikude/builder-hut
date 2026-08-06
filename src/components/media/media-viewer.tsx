@@ -96,7 +96,7 @@ export function MediaViewer({ items, openAt, onClose }: ViewerProps) {
       aria-modal="true"
       aria-label="Media viewer"
       tabIndex={-1}
-      className="fixed inset-0 z-[200] flex flex-col bg-brand-ink/97 backdrop-blur-xl focus:outline-none"
+      className="cinematic fixed inset-0 z-[200] flex flex-col bg-brand-ink/97 backdrop-blur-xl focus:outline-none"
       onTouchStart={(event) => {
         touchStartX.current = event.touches[0]?.clientX ?? null;
       }}
