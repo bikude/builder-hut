@@ -29,8 +29,8 @@ export function LogoLockup({ className }: { className?: string }) {
     <Image
       src={brand.logo.batanagar}
       alt="A Builder Hut"
-      width={220}
-      height={172}
+      width={872}
+      height={612}
       priority
       className={cn('h-auto w-[180px]', className)}
     />

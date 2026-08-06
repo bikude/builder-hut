@@ -39,7 +39,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageFilter
+from PIL import Image, ImageEnhance, ImageFilter
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "public" / "media"
@@ -77,10 +77,13 @@ PHOTOS: list[tuple[str, str, str, str]] = [
     ("A_Builder_hut_3", "IMG_20260805_141554_440.jpg", "branches/budge-budge-3-0/kids-programme.jpg", "poster"),
 ]
 
-LOGOS: list[tuple[str, str]] = [
-    ("IMG_20260805_124812.jpg", "brand/logo-batanagar"),
-    ("IMG_20260805_143241.jpg", "brand/logo-club"),
-    ("IMG_20260805_141834.jpg", "brand/logo-3-0"),
+# (source file, output stem, emblem rows, bright-wordmark rows)
+# Rows measured from each render. The band between the two — a dim bronze echo of the
+# wordmark — is dropped: it is an extrude effect that only works at poster size.
+LOGOS: list[tuple[str, str, tuple[int, int], tuple[int, int]]] = [
+    ("IMG_20260805_124812.jpg", "brand/logo-batanagar", (158, 368), (418, 496)),
+    ("IMG_20260805_143241.jpg", "brand/logo-club", (212, 372), (408, 466)),
+    ("IMG_20260805_141834.jpg", "brand/logo-3-0", (108, 258), (295, 345)),
 ]
 
 # Landscape clips. 1280x720, the widest usable rendition from the sources.
@@ -155,28 +158,51 @@ def process_video(src: Path, stem: Path, width: int, height: int, crf: int,
     print(f"  video  {mp4.relative_to(OUT)}  {width}x{height}  {mp4.stat().st_size // 1024} KB  (+poster)")
 
 
-def key_gold(src: Path) -> Image.Image:
+def key_mark(src: Path) -> Image.Image:
     """
-    Lift the gold emblem off its dark photographic background.
+    Lift the logo off its dark photographic background.
 
-    The mark is bright and warm; the backdrop is a dark gym interior. Keying on
-    luminance alone would take the background's warm highlights too, so brightness is
-    multiplied by warmth (red minus blue) — which the gold has and grey concrete does not.
+    The mark is gold — bright AND warm — while the backdrop is a dark gym interior whose
+    own highlights are bright but neutral. Multiplying brightness by warmth separates the
+    two. A second, neutral pass catches the Club's white "CLUB" wordmark, which a
+    warmth-only key would discard completely.
     """
     im = Image.open(src).convert("RGB")
     a = np.asarray(im).astype(np.float32)
     r, g, b = a[..., 0], a[..., 1], a[..., 2]
     luminance = 0.299 * r + 0.587 * g + 0.114 * b
     warmth = r - b
-    mask = np.clip((luminance - 65) / 95, 0, 1) * np.clip((warmth - 12) / 50, 0, 1)
-    alpha = Image.fromarray((np.clip(mask, 0, 1) * 255).astype(np.uint8))
-    alpha = alpha.filter(ImageFilter.GaussianBlur(0.6))  # soften the key edge
+
+    gold = np.clip((luminance - 62) / 95, 0, 1) * np.clip((warmth - 12) / 50, 0, 1)
+    white = np.clip((luminance - 150) / 60, 0, 1) * np.clip((28 - np.abs(warmth)) / 28, 0, 1)
+    mask = np.clip(np.maximum(gold, white), 0, 1)
+
+    alpha = Image.fromarray((mask * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.5))
     rgba = im.convert("RGBA")
     rgba.putalpha(alpha)
     return rgba
 
 
-def trim_alpha(im: Image.Image, pad: int = 8) -> Image.Image:
+def punch(im: Image.Image, contrast: float = 1.22, saturation: float = 1.18, brightness: float = 1.12) -> Image.Image:
+    """
+    Give the keyed gold some authority.
+
+    Straight off a phone photo the mark is muddy: it was lit by the room, not by a studio.
+    On a black page that reads as dim and slightly grey. Lifting contrast, warmth and
+    brightness in that order restores the metallic range without clipping the highlights.
+    The alpha channel is preserved untouched — enhancing it would eat the edges.
+    """
+    alpha = im.getchannel("A")
+    rgb = im.convert("RGB")
+    rgb = ImageEnhance.Contrast(rgb).enhance(contrast)
+    rgb = ImageEnhance.Color(rgb).enhance(saturation)
+    rgb = ImageEnhance.Brightness(rgb).enhance(brightness)
+    out = rgb.convert("RGBA")
+    out.putalpha(alpha)
+    return out
+
+
+def trim_alpha(im: Image.Image, pad: int = 6) -> Image.Image:
     box = im.getchannel("A").point(lambda v: 255 if v > 8 else 0).getbbox()
     if not box:
         return im
@@ -185,38 +211,54 @@ def trim_alpha(im: Image.Image, pad: int = 8) -> Image.Image:
                     min(im.width, right + pad), min(im.height, bottom + pad)))
 
 
+def build_lockup(keyed: Image.Image, emblem_rows: tuple[int, int], word_rows: tuple[int, int],
+                 gap: int = 18) -> Image.Image:
+    """
+    Recompose the lockup as emblem + wordmark, dropping the echo between them.
+
+    Every supplied logo sets its wordmark twice: a dim bronze copy directly above a bright
+    gold one, which is an extrude effect that works at poster size. Shrunk to a 170px card
+    it stops reading as depth and starts reading as motion blur — the exact complaint.
+    So the echo band is cut out and the two real elements are stacked with clean spacing.
+    """
+    emblem = trim_alpha(keyed.crop((0, emblem_rows[0], keyed.width, emblem_rows[1])))
+    word = trim_alpha(keyed.crop((0, word_rows[0], keyed.width, word_rows[1])))
+
+    width = max(emblem.width, word.width)
+    canvas = Image.new("RGBA", (width, emblem.height + gap + word.height), (0, 0, 0, 0))
+    canvas.paste(emblem, ((width - emblem.width) // 2, 0), emblem)
+    canvas.paste(word, ((width - word.width) // 2, emblem.height + gap), word)
+    return canvas
+
+
 def process_brand(uploads: Path) -> None:
-    """Transparent logos, plus the mascot sprite sliced into animatable layers."""
+    """Transparent per-branch lockups, plus the emblem used as the header mark."""
     (OUT / "brand").mkdir(parents=True, exist_ok=True)
 
-    for filename, out_stem in LOGOS:
+    for filename, out_stem, emblem_rows, word_rows in LOGOS:
         src = uploads / filename
         if not src.exists():
             print(f"  skip   {filename} (not supplied)")
             continue
-        keyed = key_gold(src)
-        full = trim_alpha(keyed)
-        full = full.resize((full.width * 2, full.height * 2), Image.LANCZOS)
-        dest = OUT / f"{out_stem}.png"
-        full.save(dest, "PNG", optimize=True)
-        print(f"  logo   {dest.relative_to(OUT)}  {full.width}x{full.height}  {dest.stat().st_size // 1024} KB")
 
-    # ── Mascot ───────────────────────────────────────────────────────────────
-    # The emblem sits above the wordmark. Cropping to the figure alone gives the mark
-    # used in the header and as the favicon source.
+        keyed = key_mark(src)
+        lockup = punch(build_lockup(keyed, emblem_rows, word_rows))
+        # 2x so the mark stays crisp on a 3x phone at the ~170px it renders at.
+        lockup = lockup.resize((lockup.width * 2, lockup.height * 2), Image.LANCZOS)
+        dest = OUT / f"{out_stem}.png"
+        lockup.save(dest, "PNG", optimize=True)
+        print(f"  logo   {dest.relative_to(OUT)}  {lockup.width}x{lockup.height}  {dest.stat().st_size // 1024} KB")
+
+    # Emblem alone — the header mark and favicon source. No wordmark: two lines of type
+    # at 36px is illegible, and the winged figure alone is what people recognise.
     src = uploads / LOGOS[0][0]
     if not src.exists():
         return
-    keyed = key_gold(src)
-    w, h = keyed.size
-    emblem = trim_alpha(keyed.crop((0, int(h * 0.16), w, int(h * 0.53))))
-    scale = 3
-    emblem = emblem.resize((emblem.width * scale, emblem.height * scale), Image.LANCZOS)
-    emblem.save(OUT / "brand/mascot.png", "PNG", optimize=True)
-    print(f"  mascot brand/mascot.png  {emblem.width}x{emblem.height}")
-
-    # The emblem is no longer sliced into animatable layers: the mascot is a rigged
-    # procedural figure now, not a 2.5D sprite, so those slices were dead weight.
+    keyed = key_mark(src)
+    emblem = punch(trim_alpha(keyed.crop((0, LOGOS[0][2][0], keyed.width, LOGOS[0][2][1]))))
+    emblem = emblem.resize((emblem.width * 3, emblem.height * 3), Image.LANCZOS)
+    emblem.save(OUT / "brand/emblem.png", "PNG", optimize=True)
+    print(f"  emblem brand/emblem.png  {emblem.width}x{emblem.height}")
 
 
 def main() -> int:

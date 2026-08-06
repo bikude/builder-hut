@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { Play } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -39,6 +40,17 @@ type AutoVideoProps = {
   /** Show the tap-to-play affordance when autoplay is refused. */
   allowManualStart?: boolean;
   objectPosition?: string;
+  /**
+   * A photograph rendered underneath the video, through next/image.
+   *
+   * This is the floor, not a decoration. `poster` only paints if the poster file itself
+   * resolves — so if a deploy is missing its video assets, or a codec is refused, or the
+   * network drops mid-load, the visitor gets a black rectangle and the section looks
+   * broken. A base image comes through a different pipeline (optimised, cached, a
+   * different URL) and is visible before the first video frame decodes, so the worst
+   * case degrades to a still of the gym rather than to nothing.
+   */
+  baseImage?: { src: string; alt: string; width: number; height: number };
 };
 
 export function AutoVideo({
@@ -50,6 +62,7 @@ export function AutoVideo({
   preload = 'metadata',
   allowManualStart = true,
   objectPosition,
+  baseImage,
 }: AutoVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const prefersReduced = usePrefersReducedMotion();
@@ -87,8 +100,23 @@ export function AutoVideo({
 
   const shared = cn('size-full object-cover', className);
 
-  // Reduced motion gets the poster frame, not a paused video element.
+  const base = baseImage ? (
+    <Image
+      src={baseImage.src}
+      alt={baseImage.alt}
+      width={baseImage.width}
+      height={baseImage.height}
+      // Never wider than the source: the supplied photography tops out near 720px.
+      sizes="100vw"
+      priority={preload === 'metadata'}
+      className={cn('absolute inset-0 size-full object-cover', className)}
+      style={{ objectPosition }}
+    />
+  ) : null;
+
+  // Reduced motion gets a still, not a paused video element.
   if (prefersReduced) {
+    if (base) return base;
     return (
       /* eslint-disable-next-line @next/next/no-img-element */
       <img
@@ -103,6 +131,8 @@ export function AutoVideo({
 
   return (
     <>
+      {base}
+
       <video
         ref={videoRef}
         className={cn(shared, fill && 'absolute inset-0')}

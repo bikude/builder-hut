@@ -7,7 +7,7 @@ import { useRef } from 'react';
 import { AutoVideo } from '@/components/media/auto-video';
 import { IronSceneLoader } from '@/components/three/iron-scene-loader';
 import { Button } from '@/components/ui/button';
-import { heroVideo } from '@/content/media';
+import { heroPhoto, heroVideo } from '@/content/media';
 import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect';
 import { usePrefersReducedMotion } from '@/hooks/use-prefers-reduced-motion';
 import { gsap } from '@/lib/gsap';
@@ -38,6 +38,7 @@ export function Hero() {
   const rootRef = useRef<HTMLElement>(null);
   const prefersReduced = usePrefersReducedMotion();
   const film = heroVideo('batanagar');
+  const still = heroPhoto('batanagar');
 
   useIsomorphicLayoutEffect(() => {
     if (prefersReduced || !rootRef.current) return;
@@ -71,7 +72,17 @@ export function Hero() {
     >
       {/* 1 — the room */}
       <div data-hero-film className="absolute inset-0 -z-30">
-        {film && <AutoVideo src={film.src} poster={film.poster} preload="auto" allowManualStart={false} />}
+        {film && (
+          <AutoVideo
+            src={film.src}
+            poster={film.poster}
+            preload="auto"
+            allowManualStart={false}
+            baseImage={
+              still ? { src: still.src, alt: still.alt, width: still.nativeWidth, height: still.nativeHeight } : undefined
+            }
+          />
+        )}
       </div>
 
       {/* 2 — warm wash, so the type keeps contrast on whatever frame the film is showing */}

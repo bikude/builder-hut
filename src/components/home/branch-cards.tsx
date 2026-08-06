@@ -7,7 +7,7 @@ import { useRef } from 'react';
 
 import { AutoVideo } from '@/components/media/auto-video';
 import { branches, type Branch } from '@/content/branches';
-import { heroVideo, reels } from '@/content/media';
+import { heroPhoto, heroVideo, reels } from '@/content/media';
 import { usePrefersReducedMotion } from '@/hooks/use-prefers-reduced-motion';
 import { cn } from '@/lib/utils';
 
@@ -45,6 +45,7 @@ function BranchCard({ branch }: { branch: Branch }) {
   const cardRef = useRef<HTMLElement>(null);
   const prefersReduced = usePrefersReducedMotion();
   const film = filmFor(branch.slug);
+  const still = heroPhoto(branch.slug);
 
   const tilt = (event: React.PointerEvent<HTMLElement>) => {
     const card = cardRef.current;
@@ -93,6 +94,9 @@ function BranchCard({ branch }: { branch: Branch }) {
             poster={film.poster}
             preload="metadata"
             allowManualStart={false}
+            baseImage={
+              still ? { src: still.src, alt: still.alt, width: still.nativeWidth, height: still.nativeHeight } : undefined
+            }
             className="scale-105 transition-transform duration-[1600ms] ease-hut group-hover:scale-110"
           />
         )}
