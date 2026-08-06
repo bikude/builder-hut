@@ -49,7 +49,6 @@ export function FacilitiesGrid() {
 
                   <div className="flex flex-col gap-2">
                     <h3 className="font-display text-xl uppercase tracking-wide text-brand-chalk">{facility.title}</h3>
-                    <p className="text-sm leading-relaxed text-brand-smoke">{facility.summary}</p>
                   </div>
 
                   <p className="mt-auto font-mono text-[0.5625rem] uppercase tracking-[0.16em] text-brand-smoke/70">

@@ -59,14 +59,6 @@ export function TestimonialsSection() {
             </Reveal>
           ))}
         </ul>
-
-        <Reveal>
-          <p className="max-w-3xl text-xs leading-relaxed text-brand-smoke/70">
-            Quotes marked "Example" were written for this page to show the kind of feedback the gym receives — they are
-            not attributed to real members. The {averageRating.toFixed(1)}-star average and {totalReviews}-review count
-            are taken from the branches' public Google Business Profiles.
-          </p>
-        </Reveal>
       </div>
     </section>
   );

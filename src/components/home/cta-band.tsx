@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 import { Parallax } from '@/components/common/parallax';
 import { Reveal } from '@/components/common/reveal';
+import { Mascot } from '@/components/brand/mascot';
 import { Button } from '@/components/ui/button';
 import { siteConfig, telLink, whatsappLink } from '@/lib/site';
 
@@ -23,12 +24,7 @@ export function CtaBand() {
             The floor is open <span className="text-engraved">right now</span>
           </h2>
         </Reveal>
-        <Reveal delay={0.12}>
-          <p className="max-w-xl text-base leading-relaxed text-brand-chalk/75">
-            Book a free trial, walk in for a tour, or just call. {siteConfig.contact.hours} — someone will pick up.
-          </p>
-        </Reveal>
-        <Reveal delay={0.18} className="flex flex-wrap justify-center gap-3">
+        <Reveal delay={0.12} className="flex flex-wrap justify-center gap-3">
           <Button asChild variant="bullion" size="lg">
             <Link href="/contact#free-trial">Book free trial</Link>
           </Button>
@@ -42,6 +38,14 @@ export function CtaBand() {
           </Button>
         </Reveal>
       </div>
+
+      {/* Moment four of four: the mascot celebrates when you reach the end. */}
+      <Mascot
+        act="celebrate"
+        size={200}
+        facing="left"
+        className="pointer-events-none absolute bottom-0 right-[2vw] size-[130px] lg:size-[200px]"
+      />
     </section>
   );
 }

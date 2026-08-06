@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 
 import type { MascotAct } from '@/components/three/mascot-rig';
 import { usePrefersReducedMotion } from '@/hooks/use-prefers-reduced-motion';
@@ -102,8 +102,8 @@ export function Mascot({ act = 'idle', size = 300, facing = 'right', silent = fa
   return (
     <div
       aria-hidden="true"
-      className={cn('pointer-events-none relative select-none', className)}
-      style={{ width: size, height: size }}
+      className={cn('pointer-events-none relative size-[var(--mascot-size)] select-none', className)}
+      style={{ '--mascot-size': `${size}px` } as CSSProperties}
     >
       {/* Warm pool of light on the floor beneath the figure. */}
       <span className="absolute bottom-[12%] left-1/2 -z-10 h-[16%] w-[62%] -translate-x-1/2 rounded-[50%] bg-brand-bullion/25 blur-2xl" />
