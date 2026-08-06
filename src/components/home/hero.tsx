@@ -71,7 +71,7 @@ export function Hero() {
     >
       {/* 1 — the room */}
       <div data-hero-film className="absolute inset-0 -z-30">
-        {film && <AutoVideo src={film.src} poster={film.poster} preload="metadata" allowManualStart={false} />}
+        {film && <AutoVideo src={film.src} poster={film.poster} preload="auto" allowManualStart={false} />}
       </div>
 
       {/* 2 — warm wash, so the type keeps contrast on whatever frame the film is showing */}

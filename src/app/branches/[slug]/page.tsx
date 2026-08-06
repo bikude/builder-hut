@@ -76,7 +76,7 @@ export default async function BranchPage({ params }: { params: Promise<{ slug: s
       <header className="relative flex min-h-[88svh] flex-col justify-end overflow-hidden bg-brand-ink pb-12 pt-[var(--header-h)]">
         <div className="absolute inset-0 -z-20">
           {film ? (
-            <AutoVideo src={film.src} poster={film.poster} preload="metadata" allowManualStart={false} />
+            <AutoVideo src={film.src} poster={film.poster} preload="auto" allowManualStart={false} />
           ) : still ? (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img src={still.src} alt="" className="size-full object-cover" aria-hidden="true" />

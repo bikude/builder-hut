@@ -52,7 +52,7 @@ export function Hook() {
       className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-brand-ink"
     >
       <div data-hook-film className="absolute inset-0 -z-20 opacity-55">
-        {film && <AutoVideo src={film.src} poster={film.poster} preload="none" allowManualStart={false} />}
+        {film && <AutoVideo src={film.src} poster={film.poster} preload="metadata" allowManualStart={false} />}
       </div>
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-brand-ink via-brand-ink/55 to-brand-ink" aria-hidden="true" />
 

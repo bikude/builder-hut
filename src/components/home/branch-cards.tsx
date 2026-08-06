@@ -72,7 +72,7 @@ export function BranchCards() {
                     <AutoVideo
                       src={film.src}
                       poster={film.poster}
-                      preload="none"
+                      preload="metadata"
                       allowManualStart={false}
                       className="transition-transform duration-[1400ms] ease-hut group-hover:scale-105"
                     />
@@ -84,8 +84,15 @@ export function BranchCards() {
                 </div>
 
                 <div className="flex flex-col items-center gap-3 p-6 text-center">
-                  <span className="relative block h-14 w-14">
-                    <Image src={LOGO_BY_SLUG[branch.slug]} alt={branch.name} fill sizes="56px" className="object-contain" />
+                  <span className="relative block h-24 w-24 drop-shadow-[0_2px_10px_rgba(0,0,0,0.6)] sm:h-28 sm:w-28">
+                    <Image
+                      src={LOGO_BY_SLUG[branch.slug]}
+                      alt={branch.name}
+                      fill
+                      sizes="(max-width: 640px) 96px, 112px"
+                      className="object-contain"
+                      priority
+                    />
                   </span>
 
                   <p className="font-mono text-xs uppercase tracking-[0.18em] text-brand-chalk/85">
