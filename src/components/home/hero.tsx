@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { MapPin } from 'lucide-react';
+import { ArrowDown } from 'lucide-react';
 import { useRef } from 'react';
 
 import { AutoVideo } from '@/components/media/auto-video';
@@ -112,7 +112,7 @@ export function Hero() {
             <div data-hero-action>
               <Button asChild variant="glass" size="lg">
                 <Link href="#branches">
-                  <MapPin aria-hidden="true" />
+                  <ArrowDown aria-hidden="true" />
                   Explore branches
                 </Link>
               </Button>

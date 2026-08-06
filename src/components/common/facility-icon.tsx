@@ -14,6 +14,8 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 
+import type { CSSProperties } from 'react';
+
 import type { FacilityIcon as FacilityIconKey } from '@/content/facilities';
 import { cn } from '@/lib/utils';
 
@@ -38,7 +40,16 @@ const ICONS: Record<FacilityIconKey, LucideIcon> = {
   ac: Snowflake,
 };
 
-export function FacilityIcon({ name, className }: { name: FacilityIconKey; className?: string }) {
+export function FacilityIcon({
+  name,
+  className,
+  style,
+}: {
+  name: FacilityIconKey;
+  className?: string;
+  /** Lets a branch tint its own icons with `accentHex`, which no Tailwind class can express. */
+  style?: CSSProperties;
+}) {
   const Icon = ICONS[name];
-  return <Icon className={cn('size-6', className)} aria-hidden="true" />;
+  return <Icon className={cn('size-6', className)} style={style} aria-hidden="true" />;
 }

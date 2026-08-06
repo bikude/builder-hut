@@ -141,9 +141,7 @@ export default async function BranchPage({ params }: { params: Promise<{ slug: s
                 key={facility.slug}
                 className="flex items-center gap-3 rounded-lg border border-brand-chalk/10 bg-brand-forge/50 p-4"
               >
-                <span className="shrink-0" style={{ color: branch.accentHex }}>
-                  <FacilityIcon name={facility.icon} className="size-5" />
-                </span>
+                <FacilityIcon name={facility.icon} className="size-5 shrink-0" style={{ color: branch.accentHex }} />
                 <span className="font-display text-sm uppercase leading-tight tracking-tight">{facility.title}</span>
               </li>
             ))}
@@ -245,6 +243,11 @@ export default async function BranchPage({ params }: { params: Promise<{ slug: s
               <MapPin className="mt-1.5 size-4 shrink-0" style={{ color: branch.accentHex }} aria-hidden="true" />
               {formatAddress(branch)}
             </address>
+
+            <p className="mt-4 flex items-center gap-3 font-mono text-[0.625rem] uppercase tracking-[0.2em] text-emerald-300">
+              <Clock className="size-3.5" aria-hidden="true" />
+              Open 24 hours · every day of the year
+            </p>
 
             <div className="mt-7 flex flex-wrap gap-2">
               <Button asChild size="sm" variant="forge">

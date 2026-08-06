@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Check, Info, Phone } from 'lucide-react';
+import { Check, Phone } from 'lucide-react';
 
 import { PageHero } from '@/components/common/page-hero';
 import { Reveal } from '@/components/common/reveal';

@@ -42,6 +42,8 @@ export type Branch = {
   equipment: string[];
   image: string;
   imageAlt: string;
+  /** This branch's own lockup, keyed out of the supplied logo render. */
+  logo: string;
   /**
    * This branch's own accent, sampled from its real lighting — Batanagar's gold LED
    * ceiling, the Club's red iron, 3.0's copper hex panels. Drives the branch card, its
@@ -90,6 +92,7 @@ export const branches: Branch[] = [
     character: 'Classic',
     image: '/media/branches/batanagar/floor-wide.jpg',
     imageAlt: 'The main training floor at A Builder Hut, Batanagar, under its geometric LED ceiling',
+    logo: '/media/brand/logo-batanagar.png',
     social: {
       instagram: 'https://www.instagram.com/abuilderhut',
       facebook: 'https://www.facebook.com/builderhut22/',
@@ -129,6 +132,7 @@ export const branches: Branch[] = [
     accentHex: '#E11B22',
     character: 'Lifestyle',
     image: '/media/branches/chandannagar-club/floor-wide.jpg',
+    logo: '/media/brand/logo-club.png',
     imageAlt: 'Rows of red plate-loaded machines across the A Builder Hut Club floor',
     social: {
       instagram: 'https://www.instagram.com/a_builder_hutclub',
@@ -169,6 +173,7 @@ export const branches: Branch[] = [
     accentHex: '#B4693C',
     character: 'Future',
     image: '/media/branches/budge-budge-3-0/floor-wide.jpg',
+    logo: '/media/brand/logo-3-0.png',
     imageAlt: 'The training floor at A Builder Hut 3.0 under its gold hex lighting',
     social: {
       instagram: 'https://www.instagram.com/a_builder_hut_3.0',

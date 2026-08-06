@@ -77,9 +77,10 @@ export const brand = {
   /**
    * The emblem alone — the winged lifter, without the wordmark.
    *
-   * Used as the header mark and the favicon source.
+   * Used as the header mark and the favicon source. It is the only place the figure
+   * appears — there is no animated mascot on the site.
    */
-  emblem: '/media/brand/mascot.png',
+  emblem: '/media/brand/emblem.png',
   /** Logo sting cut from the end of the walkthrough film — used by the preloader. */
   reveal: {
     src: '/media/brand/logo-reveal.mp4',
