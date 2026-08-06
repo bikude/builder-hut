@@ -7,6 +7,7 @@ import { heroPhoto, heroVideo } from '@/content/media';
 import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect';
 import { usePrefersReducedMotion } from '@/hooks/use-prefers-reduced-motion';
 import { gsap } from '@/lib/gsap';
+import { useI18n } from '@/lib/i18n';
 
 /**
  * The hook.
@@ -23,6 +24,7 @@ export function Hook() {
   const prefersReduced = usePrefersReducedMotion();
   const film = heroVideo('chandannagar-club');
   const still = heroPhoto('chandannagar-club');
+  const { t } = useI18n();
 
   useIsomorphicLayoutEffect(() => {
     if (prefersReduced || !rootRef.current) return;
@@ -69,10 +71,10 @@ export function Hook() {
 
       <h2 className="container text-center text-display-lg">
         <span data-hook-a className="block overflow-hidden">
-          Not just a gym.
+          {t.hookA}
         </span>
         <span data-hook-b className="block overflow-hidden text-engraved">
-          A lifestyle.
+          {t.hookB}
         </span>
       </h2>
     </section>

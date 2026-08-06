@@ -5,6 +5,7 @@ import { useCallback, useMemo, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { branches, directionsUrl } from '@/content/branches';
+import { useI18n } from '@/lib/i18n';
 import { whatsappLink } from '@/lib/site';
 import { cn } from '@/lib/utils';
 
@@ -34,6 +35,7 @@ type Located = { lat: number; lng: number } | null;
 export function GeneralContact() {
   const [coords, setCoords] = useState<Located>(null);
   const [asking, setAsking] = useState(false);
+  const { t } = useI18n();
 
   const ranked = useMemo(() => {
     if (!coords) return branches.map((branch) => ({ branch, km: null as number | null }));
@@ -60,12 +62,12 @@ export function GeneralContact() {
       <div className="container">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <h2 className="text-display-sm">
-            Visit <span className="text-engraved">today</span>
+            <span className="text-engraved">{t.visitToday}</span>
           </h2>
           {!coords && (
             <Button type="button" variant="glass" size="lg" onClick={locate} disabled={asking}>
               {asking ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : <Compass aria-hidden="true" />}
-              Nearest to me
+              {t.nearestToMe}
             </Button>
           )}
         </div>
@@ -96,7 +98,7 @@ export function GeneralContact() {
                     <span className="text-emerald-300">
                       {' · '}
                       {km < 1 ? `${Math.round(km * 1000)} m` : `${km.toFixed(1)} km`}
-                      {index === 0 && ' · nearest'}
+                      {index === 0 && ` · ${t.nearest}`}
                     </span>
                   )}
                 </p>
@@ -106,7 +108,7 @@ export function GeneralContact() {
                 <Button asChild size="sm" variant="forge">
                   <a href={`tel:${branch.phone}`} aria-label={`Call ${branch.name}`}>
                     <Phone aria-hidden="true" />
-                    Call
+                    {t.call}
                   </a>
                 </Button>
                 <Button asChild size="sm" variant="glass">
@@ -117,7 +119,7 @@ export function GeneralContact() {
                     aria-label={`WhatsApp ${branch.name}`}
                   >
                     <MessageCircle aria-hidden="true" />
-                    WhatsApp
+                    {t.whatsapp}
                   </a>
                 </Button>
                 <Button asChild size="sm" variant="ghost">

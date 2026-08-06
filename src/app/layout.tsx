@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from 'next';
-import { Anton, IBM_Plex_Mono, Manrope } from 'next/font/google';
+import { Anton, IBM_Plex_Mono, Manrope, Noto_Sans_Bengali, Noto_Sans_Devanagari } from 'next/font/google';
 
+import { LanguageSwitcher } from '@/components/chrome/language-switcher';
+import { Providers } from '@/components/chrome/providers';
+import { ThemeToggle } from '@/components/chrome/theme-toggle';
 import { Preloader } from '@/components/common/preloader';
 import { ScrollProgress } from '@/components/common/scroll-progress';
 import { FloatingActions } from '@/components/layout/floating-actions';
@@ -27,6 +30,28 @@ const mono = IBM_Plex_Mono({
   subsets: ['latin'],
   weight: ['400', '500', '600'],
   variable: '--font-mono',
+  display: 'swap',
+});
+
+/**
+ * Indic script support.
+ *
+ * The display face carries no Bengali or Devanagari glyphs, so a translated headline
+ * would otherwise fall back to whatever the device picks — usually a light UI face that
+ * looks nothing like the rest of the page. These are referenced by the `:lang()` rules in
+ * globals.css and only paint once a visitor actually switches language.
+ */
+const notoBengali = Noto_Sans_Bengali({
+  subsets: ['bengali'],
+  weight: ['400', '600', '800'],
+  variable: '--font-bengali',
+  display: 'swap',
+});
+
+const notoDevanagari = Noto_Sans_Devanagari({
+  subsets: ['devanagari'],
+  weight: ['400', '600', '800'],
+  variable: '--font-devanagari',
   display: 'swap',
 });
 
@@ -84,34 +109,42 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en-IN"
-      className={`${display.variable} ${body.variable} ${mono.variable}`}
+      className={`${display.variable} ${body.variable} ${mono.variable} ${notoBengali.variable} ${notoDevanagari.variable}`}
       suppressHydrationWarning
       data-scroll-behavior="smooth"
     >
       <body className="min-h-screen bg-brand-ink antialiased">
-        {/* Local-business graph for all three branches — one script, whole site. */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteGraph()) }}
-        />
+        <Providers>
+          {/* Local-business graph for all three branches — one script, whole site. */}
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(siteGraph()) }}
+          />
 
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[110] focus:rounded-md focus:bg-brand-bullion focus:px-4 focus:py-2 focus:font-mono focus:text-xs focus:uppercase focus:text-brand-ink"
-        >
-          Skip to content
-        </a>
+          <a
+            href="#main"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[110] focus:rounded-md focus:bg-brand-bullion focus:px-4 focus:py-2 focus:font-mono focus:text-xs focus:uppercase focus:text-brand-ink"
+          >
+            Skip to content
+          </a>
 
-        <Preloader />
-        <ScrollProgress />
+          <Preloader />
+          <ScrollProgress />
 
-        <SmoothScroll>
-          <SiteHeader />
-          <main id="main">{children}</main>
-          <SiteFooter />
-        </SmoothScroll>
+          <SmoothScroll>
+            <SiteHeader />
+            <main id="main">{children}</main>
+            <SiteFooter />
+          </SmoothScroll>
 
-        <FloatingActions />
+          <FloatingActions />
+
+          {/* Theme and language sit above everything, top-right, on every page. */}
+          <div className="fixed right-4 top-[calc(var(--header-h)+0.75rem)] z-[90] flex items-center gap-2">
+            <LanguageSwitcher />
+            <ThemeToggle />
+          </div>
+        </Providers>
       </body>
     </html>
   );

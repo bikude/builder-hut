@@ -3,7 +3,28 @@
 @tailwind utilities;
 
 @layer base {
+  /*
+   * Two themes.
+   *
+   * Only surfaces and copy change. Gold, copper and the branch reds stay fixed in both,
+   * because they are the brand — a gym whose gold turns grey in daylight mode has two
+   * identities rather than two themes.
+   *
+   * Dark is the default and the one the photography was shot for. Light exists because a
+   * phone held outdoors in Kolkata at midday is a genuinely hard read on a black page.
+   */
   :root {
+    /* Dark — the default. */
+    --ink: 6 5 10;
+    --forge: 14 12 19;
+    --steel: 25 22 33;
+    --iron: 36 31 44;
+    --chalk: 245 242 237;
+    --smoke: 148 141 155;
+    /* How hard media is knocked back so type stays readable on top of it. */
+    --scrim: 0.72;
+    --scrim-soft: 0.35;
+
     --background: 260 18% 3%;
     --foreground: 38 27% 95%;
     --card: 270 16% 7%;
@@ -28,6 +49,20 @@
     /* Fixed header height — sections use it for scroll-margin so anchor links
        never land underneath the bar. */
     --header-h: 4.5rem;
+  }
+
+  .light {
+    /* Warm paper rather than pure white: pure #fff next to gold looks like a bug. */
+    --ink: 246 243 237;
+    --forge: 255 253 249;
+    --steel: 226 220 209;
+    --iron: 212 205 192;
+    --chalk: 20 17 12;
+    --smoke: 104 96 84;
+    /* Light needs a heavier scrim, not a lighter one: dark type over bright footage is
+       harder to read than light type over dark footage. */
+    --scrim: 0.55;
+    --scrim-soft: 0.28;
   }
 
   * {
@@ -243,4 +278,41 @@
   .spotlight::before {
     animation: none !important;
   }
+}
+
+/*
+ * Script fallbacks.
+ *
+ * The display face has no Bengali or Devanagari glyphs, so a translated headline would
+ * otherwise fall back to whatever the browser picks — usually a light UI face that looks
+ * nothing like the rest of the page. Naming the Noto families explicitly keeps the
+ * weight and colour of the type consistent across all three languages.
+ *
+ * Line height is raised for both: Bengali conjuncts and Devanagari matras sit taller than
+ * Latin, and the display scale's 0.86 leading clips them.
+ */
+:lang(bn) h1,
+:lang(bn) h2,
+:lang(bn) h3,
+:lang(bn) .font-display {
+  font-family: var(--font-bengali), 'Noto Sans Bengali', sans-serif;
+  line-height: 1.22;
+  letter-spacing: 0;
+}
+
+:lang(hi) h1,
+:lang(hi) h2,
+:lang(hi) h3,
+:lang(hi) .font-display {
+  font-family: var(--font-devanagari), 'Noto Sans Devanagari', sans-serif;
+  line-height: 1.24;
+  letter-spacing: 0;
+}
+
+/* Mono is used for small caps labels; those scripts have no uppercase, and forcing it
+   does nothing useful while breaking some conjuncts. */
+:lang(bn) .uppercase,
+:lang(hi) .uppercase {
+  text-transform: none;
+  letter-spacing: 0.06em;
 }

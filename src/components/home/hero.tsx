@@ -11,7 +11,7 @@ import { heroPhoto, heroVideo } from '@/content/media';
 import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect';
 import { usePrefersReducedMotion } from '@/hooks/use-prefers-reduced-motion';
 import { gsap } from '@/lib/gsap';
-import { siteConfig } from '@/lib/site';
+import { useI18n } from '@/lib/i18n';
 
 /**
  * The hero.
@@ -30,15 +30,17 @@ import { siteConfig } from '@/lib/site';
  * The headline animates per word behind a clipping box, so the words rise out of the line
  * rather than fading onto it. Reduced-motion visitors get the finished state immediately:
  * no video autoplay, no WebGL context, no timeline.
+ *
+ * The headline is two fixed lines rather than per-word, because a translated phrase does
+ * not reliably split into the same four words in Bengali or Hindi.
  */
-
-const HEADLINE = ['Build', 'your', 'strongest', 'self'];
 
 export function Hero() {
   const rootRef = useRef<HTMLElement>(null);
   const prefersReduced = usePrefersReducedMotion();
   const film = heroVideo('batanagar');
   const still = heroPhoto('batanagar');
+  const { t: copy } = useI18n();
 
   useIsomorphicLayoutEffect(() => {
     if (prefersReduced || !rootRef.current) return;
@@ -100,14 +102,14 @@ export function Hero() {
         <div className="flex flex-col gap-8">
           <span data-hero-eyebrow className="flex items-center gap-3 font-mono text-eyebrow uppercase text-brand-gilt">
             <span className="h-px w-10 bg-brand-bullion/60" aria-hidden="true" />
-            Maheshtala &amp; Budge Budge · Since {siteConfig.founded}
+            {copy.since}
           </span>
 
           <h1 className="max-w-[16ch] text-display-lg">
-            {HEADLINE.map((word, index) => (
-              <span key={word} className="block overflow-hidden pb-[0.06em]">
-                <span data-hero-word className={index === HEADLINE.length - 1 ? 'block text-engraved' : 'block'}>
-                  {word}
+            {[copy.heroLine1, copy.heroLine2].map((line, index) => (
+              <span key={line} className="block overflow-hidden pb-[0.06em]">
+                <span data-hero-word className={index === 1 ? 'block text-engraved' : 'block'}>
+                  {line}
                 </span>
               </span>
             ))}
@@ -117,14 +119,14 @@ export function Hero() {
           <div className="flex flex-wrap items-center gap-3">
             <div data-hero-action>
               <Button asChild variant="bullion" size="lg">
-                <Link href="/contact#join">Join now</Link>
+                <Link href="/contact#join">{copy.joinNow}</Link>
               </Button>
             </div>
             <div data-hero-action>
               <Button asChild variant="glass" size="lg">
                 <Link href="#branches">
                   <ArrowDown aria-hidden="true" />
-                  Explore branches
+                  {copy.exploreBranches}
                 </Link>
               </Button>
             </div>

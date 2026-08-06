@@ -28,10 +28,12 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          ink: '#06050A', // base black — deeper than before, so gold reads as light
-          forge: '#0E0C13', // raised surface
-          steel: '#191621', // hairlines, inset panels
-          iron: '#241F2C', // top of the metal gradient
+          // Surfaces and copy read from CSS variables so the light theme can flip them
+          // without touching a single component. See the `.light` block in globals.css.
+          ink: 'rgb(var(--ink) / <alpha-value>)', // page base
+          forge: 'rgb(var(--forge) / <alpha-value>)', // raised surface
+          steel: 'rgb(var(--steel) / <alpha-value>)', // hairlines, inset panels
+          iron: 'rgb(var(--iron) / <alpha-value>)', // top of the metal gradient
           bullion: '#C9A227', // gold — the brand's own logo gold
           gilt: '#F3DA95', // gold highlight
           copper: '#B4693C', // copper — warm mid, the second metal
@@ -39,8 +41,8 @@ const config: Config = {
           flare: '#FF7A2F', // orange accent, used sparingly for heat
           blood: '#E11B22', // red — now the Club's accent, not a site-wide primary
           ember: '#8E0F17', // deep red, gradient anchor
-          chalk: '#F5F2ED', // off-white (lifting chalk, not paper white)
-          smoke: '#948D9B', // muted copy
+          chalk: 'rgb(var(--chalk) / <alpha-value>)', // primary copy
+          smoke: 'rgb(var(--smoke) / <alpha-value>)', // muted copy
         },
         accent: {
           // Per-branch identity. Sampled from each branch's real lighting.
