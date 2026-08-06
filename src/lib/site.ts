@@ -36,8 +36,8 @@ export const siteConfig = {
   },
 
   social: {
-    instagram: 'https://www.instagram.com/a_builder_hut/',
-    instagramAlt: 'https://www.instagram.com/a_builder_hut_2.0/',
+    instagram: 'https://www.instagram.com/abuilderhut',
+    instagramAlt: 'https://www.instagram.com/a_builder_hutclub',
     facebook: 'https://www.facebook.com/builderhut22/',
     facebookAlt: 'https://www.facebook.com/p/A-Builder-Hut-30-Budge-Budge-61574711963786/',
     youtube: '', // No public channel found at build time — leave empty to hide the icon.

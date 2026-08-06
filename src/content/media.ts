@@ -77,9 +77,7 @@ export const brand = {
   /**
    * The emblem alone — the winged lifter, without the wordmark.
    *
-   * Used as the header mark and the favicon source. The mascot itself is no longer this
-   * image: it is a rigged procedural figure in `src/components/three/mascot-rig.tsx`,
-   * modelled on this artwork but free to move.
+   * Used as the header mark and the favicon source.
    */
   emblem: '/media/brand/mascot.png',
   /** Logo sting cut from the end of the walkthrough film — used by the preloader. */

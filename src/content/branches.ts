@@ -1,10 +1,13 @@
 /**
  * Branch records.
  *
- * Provenance — every factual field below was read from a public source on 2026-08-03:
+ * Provenance — every factual field below was read from a public source on 2026-08-03,
+ * except where noted:
  *  - name / address / coordinates / placeId / rating / reviewCount / hours → Google Maps
  *    Business Profiles.
- *  - phone → Google Business Profile (Batanagar) and the A Builder Hut 3.0 Facebook page.
+ *  - phone (Batanagar, 3.0) → Google Business Profile and the A Builder Hut 3.0 Facebook
+ *    page. Phone (Club) and all three `social.instagram` handles → supplied directly by
+ *    the owner, not independently verified against a public listing.
  *  - equipment + positioning lines → the branches' own Facebook page descriptions.
  *
  * Anything the owner must confirm is marked OWNER ACTION (see README → Owner checklist). Ratings drift: re-check the
@@ -88,7 +91,7 @@ export const branches: Branch[] = [
     image: '/media/branches/batanagar/floor-wide.jpg',
     imageAlt: 'The main training floor at A Builder Hut, Batanagar, under its geometric LED ceiling',
     social: {
-      instagram: 'https://www.instagram.com/a_builder_hut/',
+      instagram: 'https://www.instagram.com/abuilderhut',
       facebook: 'https://www.facebook.com/builderhut22/',
     },
   },
@@ -107,8 +110,8 @@ export const branches: Branch[] = [
     rating: 5.0,
     reviewCount: 8,
     verifiedOn: '2026-08-03',
-    phone: '+918276903867',
-    phoneDisplay: '+91 82769 03867',
+    phone: '+918276903869',
+    phoneDisplay: '+91 82769 03869',
     openedYear: null,
     alwaysOpen: true,
     areaSqft: 11000,
@@ -128,7 +131,7 @@ export const branches: Branch[] = [
     image: '/media/branches/chandannagar-club/floor-wide.jpg',
     imageAlt: 'Rows of red plate-loaded machines across the A Builder Hut Club floor',
     social: {
-      instagram: 'https://www.instagram.com/a_builder_hut_2.0/',
+      instagram: 'https://www.instagram.com/a_builder_hutclub',
       facebook: 'https://www.facebook.com/p/A-Builder-Hut-20-100092604442538/',
     },
   },
@@ -168,6 +171,7 @@ export const branches: Branch[] = [
     image: '/media/branches/budge-budge-3-0/floor-wide.jpg',
     imageAlt: 'The training floor at A Builder Hut 3.0 under its gold hex lighting',
     social: {
+      instagram: 'https://www.instagram.com/a_builder_hut_3.0',
       facebook: 'https://www.facebook.com/p/A-Builder-Hut-30-Budge-Budge-61574711963786/',
     },
   },

@@ -8,7 +8,7 @@ import { footerNav, siteConfig, telLink, whatsappLink } from '@/lib/site';
 
 const socialLinks = [
   { href: siteConfig.social.instagram, label: 'Instagram — A Builder Hut', Icon: Instagram },
-  { href: siteConfig.social.instagramAlt, label: 'Instagram — A Builder Hut 2.0', Icon: Instagram },
+  { href: siteConfig.social.instagramAlt, label: 'Instagram — A Builder Hut Club', Icon: Instagram },
   { href: siteConfig.social.facebook, label: 'Facebook — A Builder Hut', Icon: Facebook },
   { href: siteConfig.social.facebookAlt, label: 'Facebook — A Builder Hut 3.0', Icon: Facebook },
 ].filter((link) => Boolean(link.href));

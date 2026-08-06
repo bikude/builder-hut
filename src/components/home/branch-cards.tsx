@@ -1,31 +1,40 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Navigation } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
-import { Mascot } from '@/components/brand/mascot';
 import { AutoVideo } from '@/components/media/auto-video';
 import { Button } from '@/components/ui/button';
-import { branches, directionsUrl, type Branch } from '@/content/branches';
-import { heroVideo, reels } from '@/content/media';
+import { branches, type Branch } from '@/content/branches';
+import { brand, heroVideo, reels } from '@/content/media';
 import { cn } from '@/lib/utils';
 
 /**
- * Three branches, three cards, one line of copy each.
+ * Three branches, three posters.
  *
- * Every card leads with moving footage of that actual floor, because a still cannot show
- * what a gym feels like at 11pm and a paragraph certainly cannot. The copy is a single
- * line — the card's job is to make you want to open it, not to explain the branch.
+ * The most important section on the page: a visitor should be able to tell there are
+ * three distinct Builder Hut experiences without reading a word, and pick one within a
+ * couple of seconds of arriving. Each card carries only what a movie poster would —
+ * moving footage, the mark, a three-to-five-word line, one button. Everything a visitor
+ * would actually need to decide (facilities, equipment, address, hours) lives one tap
+ * away on that branch's own page, not here.
  *
- * Batanagar and the Club have their own landscape films. 3.0 does not, so it borrows its
- * own vertical reel rather than falling back to a static photograph: motion on two cards
- * and a frozen third would read as a broken card.
+ * Card height is a percentage of the viewport rather than a fixed size, so on a phone
+ * three cards read as three siblings within a short scroll rather than three more
+ * full-screen sections to get through.
  */
 
-const ONE_LINER: Record<string, string> = {
-  batanagar: 'Where it started. Raw steel, open all night.',
-  'chandannagar-club': 'The big floor. Iron, gaming, café, spa.',
-  'budge-budge-3-0': 'The newest hut. Gold light, Viva iron, kids welcome.',
+const TAGLINE: Record<string, string> = {
+  batanagar: 'Where it all began',
+  'chandannagar-club': 'Train. Recover. Repeat.',
+  'budge-budge-3-0': 'Bright, modern, family-first',
+};
+
+const LOGO_BY_SLUG: Record<string, string> = {
+  batanagar: brand.logo.batanagar,
+  'chandannagar-club': brand.logo.club,
+  'budge-budge-3-0': brand.logo.threeZero,
 };
 
 const ACCENT_BORDER: Record<Branch['accent'], string> = {
@@ -41,7 +50,7 @@ function filmFor(slug: string) {
 
 export function BranchCards() {
   return (
-    <section id="branches" className="relative overflow-hidden border-y border-brand-chalk/8 bg-brand-ink py-16 sm:py-20">
+    <section id="branches" className="relative border-y border-brand-chalk/8 bg-brand-ink py-16 sm:py-20">
       <div className="container">
         <h2 className="text-display-sm">
           Three <span className="text-engraved">huts</span>
@@ -54,7 +63,7 @@ export function BranchCards() {
               <article
                 key={branch.slug}
                 className={cn(
-                  'group relative flex min-h-[26rem] flex-col justify-end overflow-hidden rounded-xl border border-brand-chalk/12 transition-colors duration-500 ease-hut sm:min-h-[30rem]',
+                  'group relative flex h-[46svh] flex-col items-center justify-end overflow-hidden rounded-xl border border-brand-chalk/12 transition-colors duration-500 ease-hut sm:h-[50svh] lg:h-[56svh]',
                   ACCENT_BORDER[branch.accent],
                 )}
               >
@@ -69,52 +78,32 @@ export function BranchCards() {
                     />
                   ) : null}
                   <div
-                    className="absolute inset-0 bg-gradient-to-t from-brand-ink via-brand-ink/55 to-brand-ink/10"
+                    className="absolute inset-0 bg-gradient-to-t from-brand-ink via-brand-ink/50 to-brand-ink/10"
                     aria-hidden="true"
                   />
                 </div>
 
-                <div className="p-6">
-                  <span
-                    className="font-mono text-[0.625rem] uppercase tracking-[0.28em]"
-                    style={{ color: branch.accentHex }}
-                  >
-                    {String(branch.index).padStart(2, '0')} · {branch.character}
+                <div className="flex flex-col items-center gap-3 p-6 text-center">
+                  <span className="relative block h-14 w-14">
+                    <Image src={LOGO_BY_SLUG[branch.slug]} alt={branch.name} fill sizes="56px" className="object-contain" />
                   </span>
 
-                  <h3 className="mt-3 font-display text-2xl uppercase leading-none tracking-tight sm:text-3xl">
-                    {branch.name}
-                  </h3>
+                  <p className="font-mono text-xs uppercase tracking-[0.18em] text-brand-chalk/85">
+                    {TAGLINE[branch.slug]}
+                  </p>
 
-                  <p className="mt-3 text-brand-chalk/75">{ONE_LINER[branch.slug]}</p>
-
-                  <div className="mt-6 flex flex-wrap gap-2">
-                    <Button asChild size="sm" variant="bullion">
-                      <Link href={`/branches/${branch.slug}`}>
-                        Explore
-                        <ArrowRight aria-hidden="true" />
-                      </Link>
-                    </Button>
-                    <Button asChild size="sm" variant="glass">
-                      <a href={directionsUrl(branch)} target="_blank" rel="noopener noreferrer">
-                        <Navigation aria-hidden="true" />
-                        Navigate
-                      </a>
-                    </Button>
-                  </div>
+                  <Button asChild size="sm" variant="bullion">
+                    <Link href={`/branches/${branch.slug}`}>
+                      Explore
+                      <ArrowRight aria-hidden="true" />
+                    </Link>
+                  </Button>
                 </div>
               </article>
             );
           })}
         </div>
       </div>
-          {/* Moment three of four: the mascot lifts while you choose a hut. */}
-      <Mascot
-        act="deadlift"
-        size={190}
-        facing="right"
-        className="pointer-events-none absolute -bottom-1 left-[1vw] size-[110px] opacity-90 xl:size-[180px]"
-      />
-</section>
+    </section>
   );
 }

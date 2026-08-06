@@ -16,7 +16,7 @@ const eslintConfig = defineConfig([
     // memoized Math.random() geometry generated once per mount — is fundamentally at odds
     // with the React Compiler purity assumptions these two rules check for. Both patterns
     // are correct and standard for R3F; scoped off rather than disabled site-wide.
-    files: ['src/components/three/**', 'src/components/brand/**'],
+    files: ['src/components/three/**'],
     rules: {
       'react-hooks/purity': 'off',
       'react-hooks/refs': 'off',

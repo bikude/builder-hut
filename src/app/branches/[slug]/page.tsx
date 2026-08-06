@@ -1,25 +1,21 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Clock, Navigation, Phone, Star } from 'lucide-react';
+import { Clock, Instagram, MapPin, MessageCircle, Navigation, Phone, Star } from 'lucide-react';
 
 import { BranchMapLoader } from '@/components/branches/branch-map-loader';
+import { BranchShowcase } from '@/components/branch/branch-showcase';
 import { FacilityIcon } from '@/components/common/facility-icon';
-import { PageHero } from '@/components/common/page-hero';
-import { Reveal } from '@/components/common/reveal';
-import { SectionHeading } from '@/components/common/section-heading';
-import { EnquiryForm } from '@/components/forms/enquiry-form';
-import { Badge } from '@/components/ui/badge';
+import { AutoVideo } from '@/components/media/auto-video';
 import { Button } from '@/components/ui/button';
-import { branches, directionsUrl, formatAddress, getBranch, listingUrl } from '@/content/branches';
+import { branches, directionsUrl, formatAddress, getBranch, kidsProgramme } from '@/content/branches';
 import { facilitiesForBranch } from '@/content/facilities';
+import { heroPhoto, heroVideo } from '@/content/media';
 import { trainersForBranch } from '@/content/trainers';
 import { buildMetadata } from '@/lib/seo';
-import { telLink } from '@/lib/site';
+import { telLink, whatsappLink } from '@/lib/site';
 import { branchSchema, breadcrumbSchema, graph } from '@/lib/structured-data';
 
-/** Three branches, known at build time — pre-render all of them. */
 export function generateStaticParams() {
   return branches.map((branch) => ({ slug: branch.slug }));
 }
@@ -27,24 +23,36 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const branch = getBranch(slug);
-  if (!branch) return buildMetadata({ title: 'Branch not found', description: 'This branch does not exist.', path: '/branches' });
-
+  if (!branch) {
+    return buildMetadata({ title: 'Branch not found', description: 'This branch does not exist.', path: '/branches' });
+  }
   return buildMetadata({
     title: `${branch.name} — ${branch.shortName}`,
-    description: `${branch.name} at ${formatAddress(branch)}. Open 24 hours, fully air-conditioned, certified trainers. ${branch.tagline}`,
+    description: `${branch.tagline} Open 24 hours at ${formatAddress(branch)}.`,
     path: `/branches/${branch.slug}`,
     image: branch.image,
-    keywords: [`gym in ${branch.shortName}`, `${branch.name}`, `24 hour gym ${branch.locality}`],
+    keywords: [`gym in ${branch.shortName}`, branch.name, `24 hour gym ${branch.locality}`],
   });
 }
 
+/**
+ * A branch, as a trailer.
+ *
+ * Film first, then the floor in motion, then the rooms, then the few facts that decide
+ * whether someone comes tonight: what is here, who coaches, where it is, how to reach it.
+ * Everything detailed about a branch lives here rather than on the homepage — that page's
+ * whole job is getting a visitor to this one.
+ */
 export default async function BranchPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const branch = getBranch(slug);
   if (!branch) notFound();
 
-  const branchFacilities = facilitiesForBranch(branch.slug);
-  const branchTrainers = trainersForBranch(branch.slug);
+  const film = heroVideo(branch.slug);
+  const still = heroPhoto(branch.slug);
+  const facilities = facilitiesForBranch(branch.slug);
+  const roles = trainersForBranch(branch.slug);
+  const kids = kidsProgramme.branchSlug === branch.slug ? kidsProgramme : null;
 
   return (
     <>
@@ -64,30 +72,181 @@ export default async function BranchPage({ params }: { params: Promise<{ slug: s
         }}
       />
 
-      <PageHero
-        eyebrow={`Branch ${String(branch.index).padStart(2, '0')}`}
-        title={branch.name}
-        lede={branch.tagline}
-        crumbs={[
-          { label: 'Home', href: '/' },
-          { label: 'Branches', href: '/branches' },
-          { label: branch.shortName },
-        ]}
-        aside={
-          <div className="glass flex flex-col gap-4 rounded-lg p-6">
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="open">
-                <Clock className="size-3" aria-hidden="true" />
-                Open 24 hours
-              </Badge>
-              {branch.rating !== null && (
-                <Badge variant="bullion">
-                  <Star className="size-3 fill-current" aria-hidden="true" />
-                  {branch.rating.toFixed(1)} · {branch.reviewCount}+ reviews
-                </Badge>
-              )}
+      {/* ── 1 · Trailer ─────────────────────────────────────────────────── */}
+      <header className="relative flex min-h-[88svh] flex-col justify-end overflow-hidden bg-brand-ink pb-12 pt-[var(--header-h)]">
+        <div className="absolute inset-0 -z-20">
+          {film ? (
+            <AutoVideo src={film.src} poster={film.poster} preload="metadata" allowManualStart={false} />
+          ) : still ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img src={still.src} alt="" className="size-full object-cover" aria-hidden="true" />
+          ) : null}
+        </div>
+        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-brand-ink via-brand-ink/70 to-brand-ink/30" aria-hidden="true" />
+
+        <div className="container">
+          <span
+            className="font-mono text-eyebrow uppercase tracking-[0.28em]"
+            style={{ color: branch.accentHex }}
+          >
+            {String(branch.index).padStart(2, '0')} · {branch.character}
+          </span>
+
+          <h1 className="mt-4 max-w-[14ch] text-display-md">{branch.name}</h1>
+          <p className="mt-4 max-w-lg text-lg text-brand-chalk/75">{branch.tagline}</p>
+
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Button asChild variant="bullion" size="lg">
+              <a href={telLink(branch.phone)}>
+                <Phone aria-hidden="true" />
+                Call this hut
+              </a>
+            </Button>
+            <Button asChild variant="glass" size="lg">
+              <a href={directionsUrl(branch)} target="_blank" rel="noopener noreferrer">
+                <Navigation aria-hidden="true" />
+                Navigate
+              </a>
+            </Button>
+          </div>
+
+          <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-brand-chalk/10 pt-5 font-mono text-[0.625rem] uppercase tracking-[0.2em] text-brand-smoke">
+            <span className="flex items-center gap-2 text-emerald-300">
+              <Clock className="size-3" aria-hidden="true" />
+              Open 24×7
+            </span>
+            {branch.rating !== null && (
+              <span className="flex items-center gap-2 text-brand-gilt">
+                <Star className="size-3 fill-current" aria-hidden="true" />
+                {branch.rating.toFixed(1)} · {branch.reviewCount}+
+              </span>
+            )}
+            <span>{branch.locality}</span>
+          </div>
+        </div>
+      </header>
+
+      {/* ── 2 · The floor, moving · 3 · The rooms ───────────────────────── */}
+      <BranchShowcase branchSlug={branch.slug} accentHex={branch.accentHex} />
+
+      {/* ── 4 · What's here. Icons and names, no descriptions. ──────────── */}
+      <section className="border-b border-brand-chalk/8 py-12 sm:py-16">
+        <div className="container">
+          <h2 className="font-mono text-[0.625rem] uppercase tracking-[0.26em]" style={{ color: branch.accentHex }}>
+            What&apos;s here
+          </h2>
+          <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {facilities.map((facility) => (
+              <li
+                key={facility.slug}
+                className="flex items-center gap-3 rounded-lg border border-brand-chalk/10 bg-brand-forge/50 p-4"
+              >
+                <span className="shrink-0" style={{ color: branch.accentHex }}>
+                  <FacilityIcon name={facility.icon} className="size-5" />
+                </span>
+                <span className="font-display text-sm uppercase leading-tight tracking-tight">{facility.title}</span>
+              </li>
+            ))}
+          </ul>
+
+          {branch.equipment.length > 0 && (
+            <>
+              <h2
+                className="mt-12 font-mono text-[0.625rem] uppercase tracking-[0.26em]"
+                style={{ color: branch.accentHex }}
+              >
+                Equipment
+              </h2>
+              <ul className="mt-6 flex flex-wrap gap-2">
+                {branch.equipment.map((item) => (
+                  <li
+                    key={item}
+                    className="rounded-full border border-brand-chalk/12 px-3 py-1 font-mono text-[0.625rem] uppercase tracking-[0.16em] text-brand-smoke"
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+      </section>
+
+      {/* ── 4b · Trainer highlights. Roles, not paragraphs. ─────────────── */}
+      {roles.length > 0 && (
+        <section className="border-b border-brand-chalk/8 py-12 sm:py-16">
+          <div className="container">
+            <h2 className="font-mono text-[0.625rem] uppercase tracking-[0.26em]" style={{ color: branch.accentHex }}>
+              Who coaches here
+            </h2>
+            <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {roles.map((trainer) => (
+                <li
+                  key={trainer.slug}
+                  className="rounded-lg border border-brand-chalk/10 bg-brand-forge/50 p-5"
+                >
+                  <p className="font-display text-base uppercase tracking-tight text-brand-chalk">
+                    {trainer.name}
+                    {trainer.isRole && (
+                      <span className="ml-2 align-middle font-mono text-[0.5625rem] normal-case tracking-normal text-brand-bullion">
+                        · Role, not yet a named trainer
+                      </span>
+                    )}
+                  </p>
+                  <p className="mt-1 font-mono text-[0.625rem] uppercase tracking-[0.16em] text-brand-smoke">
+                    {trainer.specialisms.slice(0, 2).join(' · ')}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
+      {/* ── 4c · Kids programme. 3.0 only, and it is a poster, not an essay. */}
+      {kids && (
+        <section className="border-b border-brand-chalk/8 py-12 sm:py-16">
+          <div className="container grid items-center gap-8 md:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={kids.poster}
+              alt="A Builder Hut 3.0 kids fitness programme"
+              loading="lazy"
+              className="w-full rounded-xl border border-brand-chalk/12"
+            />
+            <div>
+              <h2 className="text-display-sm">{kids.headline}</h2>
+              <p className="mt-4 font-mono text-[0.625rem] uppercase tracking-[0.22em] text-brand-gilt">
+                {kids.audience}
+              </p>
+              <Button asChild variant="bullion" size="lg" className="mt-6">
+                <a
+                  href={whatsappLink(`Hi! I'd like to ask about the kids programme at ${branch.name}.`)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <MessageCircle aria-hidden="true" />
+                  Ask about kids &amp; family
+                </a>
+              </Button>
             </div>
-            <div className="flex flex-wrap gap-2">
+          </div>
+        </section>
+      )}
+
+      {/* ── 5 · Where, and how to reach it ──────────────────────────────── */}
+      <section className="py-12 sm:py-16">
+        <div className="container grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
+          <div>
+            <h2 className="font-mono text-[0.625rem] uppercase tracking-[0.26em]" style={{ color: branch.accentHex }}>
+              Find it
+            </h2>
+            <address className="mt-5 flex items-start gap-3 not-italic text-lg leading-relaxed text-brand-chalk/85">
+              <MapPin className="mt-1.5 size-4 shrink-0" style={{ color: branch.accentHex }} aria-hidden="true" />
+              {formatAddress(branch)}
+            </address>
+
+            <div className="mt-7 flex flex-wrap gap-2">
               <Button asChild size="sm" variant="forge">
                 <a href={telLink(branch.phone)}>
                   <Phone aria-hidden="true" />
@@ -95,164 +254,30 @@ export default async function BranchPage({ params }: { params: Promise<{ slug: s
                 </a>
               </Button>
               <Button asChild size="sm" variant="glass">
-                <a href={directionsUrl(branch)} target="_blank" rel="noopener noreferrer">
-                  <Navigation aria-hidden="true" />
-                  Directions
+                <a
+                  href={whatsappLink(`Hi! I'd like to visit ${branch.name}.`)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <MessageCircle aria-hidden="true" />
+                  WhatsApp
                 </a>
+              </Button>
+              {branch.social.instagram && (
+                <Button asChild size="sm" variant="glass">
+                  <a href={branch.social.instagram} target="_blank" rel="noopener noreferrer">
+                    <Instagram aria-hidden="true" />
+                    Instagram
+                  </a>
+                </Button>
+              )}
+              <Button asChild size="sm" variant="ghost">
+                <Link href="/branches">All branches</Link>
               </Button>
             </div>
           </div>
-        }
-      />
 
-      <section className="border-b border-brand-chalk/8 py-20 sm:py-28">
-        <div className="container grid gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-16">
-          <Reveal>
-            <div className="relative aspect-[16/10] overflow-hidden rounded-lg border border-brand-chalk/10">
-              <Image
-                src={branch.image}
-                alt={branch.imageAlt}
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 55vw"
-                className="object-cover"
-              />
-            </div>
-          </Reveal>
-
-          <div className="flex flex-col gap-8">
-            <div>
-              <h2 className="font-mono text-[0.625rem] uppercase tracking-[0.24em] text-brand-bullion">Address</h2>
-              <address className="mt-3 not-italic text-lg leading-relaxed text-brand-chalk/85">
-                {branch.addressLines.map((line) => (
-                  <span key={line} className="block">
-                    {line}
-                  </span>
-                ))}
-                <span className="block">
-                  {branch.locality} — {branch.postalCode}
-                </span>
-                <span className="block">{branch.region}</span>
-              </address>
-            </div>
-
-            <dl className="grid grid-cols-2 gap-6 border-t border-brand-chalk/10 pt-8">
-              <div>
-                <dt className="font-mono text-[0.625rem] uppercase tracking-[0.2em] text-brand-smoke">Hours</dt>
-                <dd className="mt-1 font-display text-xl text-brand-chalk">24 × 7</dd>
-              </div>
-              {branch.areaSqft !== null && (
-                <div>
-                  <dt className="font-mono text-[0.625rem] uppercase tracking-[0.2em] text-brand-smoke">Floor area</dt>
-                  <dd className="mt-1 font-display text-xl tabular-nums text-brand-chalk">
-                    {branch.areaSqft.toLocaleString('en-IN')} sq ft
-                  </dd>
-                </div>
-              )}
-              {branch.stations && (
-                <div>
-                  <dt className="font-mono text-[0.625rem] uppercase tracking-[0.2em] text-brand-smoke">Stations</dt>
-                  <dd className="mt-1 font-display text-xl text-brand-chalk">{branch.stations}</dd>
-                </div>
-              )}
-              {branch.openedYear !== null && (
-                <div>
-                  <dt className="font-mono text-[0.625rem] uppercase tracking-[0.2em] text-brand-smoke">Opened</dt>
-                  <dd className="mt-1 font-display text-xl tabular-nums text-brand-chalk">{branch.openedYear}</dd>
-                </div>
-              )}
-            </dl>
-
-            {branch.equipment.length > 0 && (
-              <div className="border-t border-brand-chalk/10 pt-8">
-                <h2 className="font-mono text-[0.625rem] uppercase tracking-[0.24em] text-brand-bullion">Equipment</h2>
-                <ul className="mt-4 flex flex-wrap gap-2">
-                  {branch.equipment.map((item) => (
-                    <li
-                      key={item}
-                      className="rounded-full border border-brand-chalk/12 px-3 py-1 font-mono text-[0.625rem] uppercase tracking-[0.16em] text-brand-smoke"
-                    >
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {branch.rating !== null && (
-              <p className="border-t border-brand-chalk/10 pt-8 text-sm leading-relaxed text-brand-smoke">
-                Rated {branch.rating.toFixed(1)} from {branch.reviewCount}+ Google reviews, verified{' '}
-                {new Date(branch.verifiedOn).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })}.{' '}
-                <a
-                  href={listingUrl(branch)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-brand-bullion underline-offset-4 hover:underline"
-                >
-                  Read the reviews on Google
-                </a>
-                .
-              </p>
-            )}
-          </div>
-        </div>
-      </section>
-
-      <section className="border-b border-brand-chalk/8 py-24 sm:py-32">
-        <div className="container">
-          <SectionHeading
-            eyebrow="At this branch"
-            title={<>What is <span className="text-engraved">on the floor</span></>}
-          />
-          <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {branchFacilities.map((facility, index) => (
-              <Reveal as="li" key={facility.slug} delay={index * 0.05}>
-                <div className="glass flex h-full flex-col gap-3 rounded-lg p-6">
-                  <FacilityIcon name={facility.icon} className="size-6 text-brand-blood" />
-                  <h3 className="font-display text-lg uppercase tracking-tight">{facility.title}</h3>
-                  <p className="text-sm leading-relaxed text-brand-smoke">{facility.summary}</p>
-                  {facility.spec && (
-                    <span className="mt-auto font-mono text-[0.625rem] uppercase tracking-[0.18em] text-brand-bullion">
-                      {facility.spec}
-                    </span>
-                  )}
-                </div>
-              </Reveal>
-            ))}
-          </ul>
-
-          {branchTrainers.length > 0 && (
-            <p className="mt-10 text-sm leading-relaxed text-brand-smoke">
-              {branchTrainers.length} coaching {branchTrainers.length === 1 ? 'role is' : 'roles are'} available at
-              this branch.{' '}
-              <Link href="/personal-training" className="text-brand-bullion underline-offset-4 hover:underline">
-                See personal training
-              </Link>
-              .
-            </p>
-          )}
-        </div>
-      </section>
-
-      <section id="visit" className="py-24 sm:py-32">
-        <div className="container grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
-          <div>
-            <SectionHeading
-              eyebrow="Find us"
-              title={<>Get here <span className="text-engraved">tonight</span></>}
-              lede="The floor is open now. Tap the marker for a route, or send an enquiry and a trainer will call you back."
-            />
-            <Reveal className="mt-10">
-              <BranchMapLoader branch={branch} className="h-[24rem]" />
-            </Reveal>
-          </div>
-
-          <div>
-            <h2 className="font-mono text-[0.625rem] uppercase tracking-[0.24em] text-brand-bullion">
-              Enquire about {branch.shortName}
-            </h2>
-            <EnquiryForm className="mt-6" defaultIntent="free-trial" />
-          </div>
+          <BranchMapLoader branch={branch} className="h-[22rem]" />
         </div>
       </section>
     </>

@@ -238,27 +238,9 @@
   }
 }
 
-/* Mascot speech: rises in, holds, fades. One shot — the element unmounts afterwards. */
-@keyframes mascot-speak {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, calc(-100% + 10px)) scale(0.94);
-  }
-  8%,
-  82% {
-    opacity: 1;
-    transform: translate(-50%, -100%) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, calc(-100% - 8px)) scale(0.98);
-  }
-}
-
 /* Everything above is decoration. None of it runs when motion is unwelcome. */
 @media (prefers-reduced-motion: reduce) {
-  .spotlight::before,
-  [class*='mascot-speak'] {
+  .spotlight::before {
     animation: none !important;
   }
 }

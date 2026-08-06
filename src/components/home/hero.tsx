@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { MapPin } from 'lucide-react';
 import { useRef } from 'react';
 
-import { Mascot } from '@/components/brand/mascot';
 import { AutoVideo } from '@/components/media/auto-video';
 import { IronSceneLoader } from '@/components/three/iron-scene-loader';
 import { Button } from '@/components/ui/button';
@@ -112,20 +111,15 @@ export function Hero() {
             </div>
             <div data-hero-action>
               <Button asChild variant="glass" size="lg">
-                <Link href="#nearest">
+                <Link href="#branches">
                   <MapPin aria-hidden="true" />
-                  Find your nearest hut
+                  Explore branches
                 </Link>
               </Button>
             </div>
           </div>
-
         </div>
       </div>
-
-      {/* The mascot walks in once here, then does not appear again until a section
-          explicitly asks for it. Hidden below lg: on a phone it would crowd the CTAs. */}
-      <Mascot act="wave" size={300} facing="left" className="absolute bottom-20 right-[2vw] size-[170px] sm:bottom-24 sm:right-[4vw] sm:size-[240px] lg:size-[320px]" />
     </section>
   );
 }
