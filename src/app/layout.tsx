@@ -5,6 +5,7 @@ import { LanguageSwitcher } from '@/components/chrome/language-switcher';
 import { Providers } from '@/components/chrome/providers';
 import { ThemeToggle } from '@/components/chrome/theme-toggle';
 import { Preloader } from '@/components/common/preloader';
+import { PromoPopup } from '@/components/common/promo-popup';
 import { ScrollProgress } from '@/components/common/scroll-progress';
 import { FloatingActions } from '@/components/layout/floating-actions';
 import { SiteFooter } from '@/components/layout/site-footer';
@@ -129,6 +130,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </a>
 
           <Preloader />
+          <PromoPopup />
           <ScrollProgress />
 
           <SmoothScroll>
